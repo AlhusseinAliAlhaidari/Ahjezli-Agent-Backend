@@ -23,6 +23,10 @@ This project leverages **LangGraph** and **Groq** to create a hybrid agent capab
 - **Circuit Breaker Pattern:** Automatically blacklists failing models or dead APIs temporarily.
 - **Monkey Patching:** Custom fixes for compatibility between `LangGraph` and `aiosqlite`.
 
+## 📊 Live Dashboard
+Explore the project performance and metrics here:
+[**View Ehjezli Dashboard**](https://ehjezli-dash-mkhcwwnt.manus.space/)
+
 ## 🛠️ Tech Stack
 
 - **Framework:** [FastAPI](https://fastapi.tiangolo.com/) (Async Web Server)
