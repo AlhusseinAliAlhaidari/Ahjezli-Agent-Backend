@@ -56,7 +56,7 @@ Clone the repo:
 Bash
 
 git clone [https://github.com/AlhusseinAliAlhaidari/Ahjezli-Agent-Backend.git](https://github.com/AlhusseinAliAlhaidari/Ahjezli-Agent-Backend.git)
-cd Ehjezli-AI-Core
+cd Ahjezli-Agent-Backend
 Set up Virtual Environment:
 
 Bash
