@@ -16,9 +16,3 @@
 #         """
 #         yield self.memory
 
-
-
-
-
-
-
