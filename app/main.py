@@ -95,7 +95,7 @@ app.add_middleware(
 class QueryRequest(BaseModel):
     query: str
     user_id: str = "guest"
-
+    access_token: str | None = None
 
 @app.get("/")
 def health_check():
@@ -107,7 +107,11 @@ async def chat_stream(request: QueryRequest):
     Endpoint للبث الحي (Streaming) لخطوات الوكيل وردوده.
     """
     async def event_generator():
-        async for event in orchestrator.process_request(request.query,session_id= request.user_id):
+        async for event in orchestrator.process_request(
+            request.query,
+            session_id= request.user_id,
+            access_token=request.access_token
+        ):
             # تحويل البيانات إلى تنسيق SSE (Server-Sent Events) أو JSON Lines
             yield json.dumps(event, ensure_ascii=False) + "\n"
 

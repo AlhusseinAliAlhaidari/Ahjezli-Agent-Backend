@@ -1,30 +1,30 @@
-# HTTP Client logic
+# # HTTP Client logic
 
 
-import httpx
-from typing import Dict, Any
-from app.core.logger import setup_logger
+# import httpx
+# from typing import Dict, Any
+# from app.core.logger import setup_logger
 
-logger = setup_logger("ApiService")
+# logger = setup_logger("ApiService")
 
-class ApiService:
-    @staticmethod
-    async def execute_request(url: str, method: str, params: Dict[str, Any] = None) -> Dict:
-        async with httpx.AsyncClient() as client:
-            try:
-                if method.upper() == "GET":
-                    resp = await client.get(url, params=params, timeout=20.0)
-                else:
-                    resp = await client.post(url, json=params, timeout=20.0)
+# class ApiService:
+#     @staticmethod
+#     async def execute_request(url: str, method: str, params: Dict[str, Any] = None) -> Dict:
+#         async with httpx.AsyncClient() as client:
+#             try:
+#                 if method.upper() == "GET":
+#                     resp = await client.get(url, params=params, timeout=20.0)
+#                 else:
+#                     resp = await client.post(url, json=params, timeout=20.0)
                 
-                resp.raise_for_status()
-                return resp.json()
-            except httpx.HTTPStatusError as e:
-                logger.error(f"HTTP Error: {e.response.text}")
-                return {"error": f"API Error {e.response.status_code}: {e.response.text}"}
-            except Exception as e:
-                logger.error(f"Connection Error: {str(e)}")
-                return {"error": f"Connection failed: {str(e)}"}
+#                 resp.raise_for_status()
+#                 return resp.json()
+#             except httpx.HTTPStatusError as e:
+#                 logger.error(f"HTTP Error: {e.response.text}")
+#                 return {"error": f"API Error {e.response.status_code}: {e.response.text}"}
+#             except Exception as e:
+#                 logger.error(f"Connection Error: {str(e)}")
+#                 return {"error": f"Connection failed: {str(e)}"}
 
 
 
@@ -32,7 +32,7 @@ class ApiService:
 
 
 
-
+#!============================
 
 
 
@@ -99,3 +99,97 @@ class ApiService:
 #             except Exception as e:
 #                 logger.error(f"Unexpected Error: {str(e)}")
 #                 return {"error": f"Unexpected error: {str(e)}"}
+
+#!==============================
+
+
+# app/services/api_service.py
+
+import httpx
+from typing import Dict, Any, Optional
+from app.core.logger import setup_logger
+
+logger = setup_logger("ApiService")
+
+
+class ApiService:
+    DEFAULT_TIMEOUT = 30.0
+
+    @staticmethod
+    async def execute_request(
+        *,
+        url: str,
+        method: str,
+        query_params: Optional[Dict[str, Any]] = None,
+        body: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> Dict[str, Any]:
+
+        method = method.upper()
+        headers = headers or {}
+        query_params = query_params or {}
+
+        print("\n================ API REQUEST =================")
+        print("METHOD:", method)
+        print("URL:", url)
+        print("HEADERS:", headers)
+        print("QUERY PARAMS:", query_params)
+        print("BODY:", body)
+        print("=============================================\n")
+
+        try:
+            async with httpx.AsyncClient(timeout=ApiService.DEFAULT_TIMEOUT, follow_redirects=True) as client:
+
+                if method == "GET":
+                    response = await client.get(url, params=query_params, headers=headers)
+
+                elif method == "POST":
+                    response = await client.post(url, params=query_params, json=body, headers=headers)
+
+                elif method == "PUT":
+                    response = await client.put(url, params=query_params, json=body, headers=headers)
+
+                elif method == "PATCH":
+                    response = await client.patch(url, params=query_params, json=body, headers=headers)
+
+                elif method == "DELETE":
+                    response = await client.delete(url, params=query_params, headers=headers)
+
+                else:
+                    raise ValueError(f"Unsupported HTTP method: {method}")
+
+                print("\n================ API RESPONSE =================")
+                print("STATUS CODE:", response.status_code)
+                print("RESPONSE TEXT:", response.text)
+                print("RESPONSE HEADERS:", dict(response.headers))
+                print("==============================================\n")
+
+                response.raise_for_status()
+
+                try:
+                    return response.json()
+                except Exception:
+                    return {"raw_response": response.text}
+
+        except httpx.HTTPStatusError as e:
+            print("\n🚨 BACKEND HTTP ERROR 🚨")
+            print("STATUS:", e.response.status_code)
+            print("RESPONSE:", e.response.text)
+            print("URL:", e.request.url)
+            print("HEADERS SENT:", e.request.headers)
+            print("==============================================\n")
+
+            return {
+                "error": "BACKEND_HTTP_ERROR",
+                "status_code": e.response.status_code,
+                "backend_response": e.response.text,
+            }
+
+        except Exception as e:
+            print("\n🔥 CONNECTION / UNKNOWN ERROR 🔥")
+            print(str(e))
+            print("==============================================\n")
+            return {
+                "error": "CONNECTION_ERROR",
+                "details": str(e)
+            }
