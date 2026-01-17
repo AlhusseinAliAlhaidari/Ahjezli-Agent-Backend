@@ -1,4 +1,5 @@
 [
+
   {
     "tool_name": "search_trips",
     "description": "Use this tool to find available trip IDs for a given route and date. It requires departure city, arrival city, and a date (YYYY-MM-DD).",
@@ -28,10 +29,25 @@
   },
   {
     "tool_name": "get_available_trips_now",
-    "description": "Use this tool to get a full list of currently available trips, including departure/arrival times, bus details, and available seats.",
-    "endpoint": "/trips/available-now?page=1&per_page=100",
+    "description": "Use this tool to retrieve available trips in pages. skip represents the page number (starts from 1), and limit defines how many trips to return per request — to avoid loading all data at once.limit عدد العناصر المراد جلبها لكل دفعة. يفضل أن يكون 3 أو 5 لتقليل حجم البيانات.",
+    "endpoint": "/trips/available-now?page={skip}&per_page={limit}",
     "method": "GET",
-    "parameters": []
+    "parameters": [
+      {
+       "name": "skip",
+       "type": "integer",
+        "description": "The number of items to skip. إذا لم يحدد المستخدم skip → استخدم skip = 1.",
+        "default": 1,
+        "required": true
+      },
+      {
+        "name": "limit",
+       "type": "integer",
+       "required": true,
+        "description": "The number of items to return.",
+        "default": 3
+      }
+    ]
   },
     {
     "tool_name": "get_partner_required_documents",

@@ -113,9 +113,10 @@ class ToolFactory:
                         body[key] = value
 
             # إضافة / في النهاية لتجنب 307
+            # url = f"{settings.TOOLS_API_BASE_URL.rstrip('/')}/{endpoint.lstrip('/')}"
+            # if not url.endswith("/"):
+            #     url += "/"
             url = f"{settings.TOOLS_API_BASE_URL.rstrip('/')}/{endpoint.lstrip('/')}"
-            if not url.endswith("/"):
-                url += "/"
 
             # ======== 4. تنفيذ الطلب ========
             result = await ApiService.execute_request(

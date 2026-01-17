@@ -1685,3 +1685,14 @@ httpx.ReadTimeout
 2026-01-17 01:09:13,391 - ModelRegistry - WARNING - All models are blacklisted! Resetting fallback.
 2026-01-17 01:09:15,287 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 01:10:15 | Reason: Error code: 400 - {'error': {'message': "tool call validation failed: parameters for tool get_availa
 2026-01-17 01:09:16,741 - ModelRegistry - WARNING - BLACKLIST: gemma2-9b-it until 01:10:16 | Reason: Error code: 400 - {'error': {'message': 'The model `gemma2-9b-it` has been decommissioned and is no 
+2026-01-17 23:34:15,159 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 23:39:15 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-120b` in organi
+2026-01-17 23:34:17,054 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-70b-versatile until 23:35:17 | Reason: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned
+2026-01-17 23:34:21,239 - ModelRegistry - WARNING - BLACKLIST: mixtral-8x22b-instruct-v0.1 until 23:35:21 | Reason: Error code: 404 - {'error': {'message': 'The model `mixtral-8x22b-instruct-v0.1` does not exist or y
+2026-01-17 23:34:26,019 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 23:39:26 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organiz
+2026-01-17 23:34:30,250 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 23:39:30 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-safeguard-20b` 
+2026-01-17 23:34:34,210 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 23:39:34 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `meta-llama/llama-4-maverick-17
+2026-01-17 23:34:38,609 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 23:39:38 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-17 23:34:40,096 - ModelRegistry - WARNING - BLACKLIST: gemma2-9b-it until 23:35:40 | Reason: Error code: 400 - {'error': {'message': 'The model `gemma2-9b-it` has been decommissioned and is no 
+2026-01-17 23:39:03,254 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-70b-versatile until 23:40:03 | Reason: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned
+2026-01-17 23:39:05,058 - ModelRegistry - WARNING - BLACKLIST: mixtral-8x22b-instruct-v0.1 until 23:40:05 | Reason: Error code: 404 - {'error': {'message': 'The model `mixtral-8x22b-instruct-v0.1` does not exist or y
+2026-01-17 23:39:06,884 - ModelRegistry - WARNING - BLACKLIST: gemma2-9b-it until 23:40:06 | Reason: Error code: 400 - {'error': {'message': 'The model `gemma2-9b-it` has been decommissioned and is no 

@@ -72,16 +72,17 @@ class ModelRegistry:
     def __init__(self):
         self.primary_models = [
             "openai/gpt-oss-120b",
-            "llama-3.1-70b-versatile", # بديل قوي لـ 70b المتوقف
-            "mixtral-8x22b-instruct-v0.1",
+            # "llama-3.1-70b-versatile", # بديل قوي لـ 70b المتوقف
+            # "mixtral-8x22b-instruct-v0.1",
             "openai/gpt-oss-20b",
             "openai/gpt-oss-safeguard-20b",
             "meta-llama/llama-4-maverick-17b-128e-instruct",
+            "qwen/qwen3-32b",
 
         ]
         self.fallback_models = [
             "llama-3.1-8b-instant",   # نموذج سريع ومحدث
-            "gemma2-9b-it"            # نموذج حديث من Google
+            # "gemma2-9b-it"            # نموذج حديث من Google
         ]
         # تتبع النماذج المحظورة مؤقتاً: {اسم_النموذج: وقت_انتهاء_الحظر}
         self.blacklist = {}

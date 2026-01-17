@@ -705,7 +705,7 @@ MAX_SESSIONS = 5000
 MAX_TOTAL_MESSAGES = 100_000
 
 class SmartMemory:
-    def __init__(self, window_size: int = 20):
+    def __init__(self, window_size: int = 10):
         self.window_size = window_size
         self.window: List[BaseMessage] = []
         self.last_tool_used: Optional[str] = None
@@ -768,7 +768,6 @@ class OrchestratorAgent:
         self.registry = ModelRegistry()
         self.memory_store = MemoryStore()
         profile_content = settings.profile
-        docs_content = settings.api_docs
 
         self.system_prompt = f"""
 You are the official assistant of the platform.
@@ -783,9 +782,6 @@ Rules:
 Platform profile:
 {profile_content}
 
-API Service Documentation:
-
-{docs_content}
 """.strip()
     
     async def process_request(self, user_input: str, session_id: str, access_token: Optional[str] = None) -> AsyncGenerator[Dict, None]:
@@ -815,6 +811,7 @@ API Service Documentation:
                     if not event.get("messages"):
                         continue
                     last_message = event["messages"][-1]
+                    
 
                     if hasattr(last_message, "tool_calls") and last_message.tool_calls:
                         for call in last_message.tool_calls:
