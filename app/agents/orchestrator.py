@@ -768,7 +768,7 @@ class OrchestratorAgent:
         self.registry = ModelRegistry()
         self.memory_store = MemoryStore()
         profile_content = settings.profile
-
+        docs_info = settings.api_docs
         self.system_prompt = f"""
 You are the official assistant of the platform.
 
@@ -782,6 +782,8 @@ Rules:
 Platform profile:
 {profile_content}
 
+Available tools and their documentation:
+{docs_info}
 """.strip()
     
     async def process_request(self, user_input: str, session_id: str, access_token: Optional[str] = None) -> AsyncGenerator[Dict, None]:
