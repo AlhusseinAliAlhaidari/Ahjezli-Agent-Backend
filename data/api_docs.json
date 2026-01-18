@@ -57,6 +57,14 @@
       }
     ]
   },
+  {
+    "tool_name": "get_my_documents",
+    "description": "تستخدم هذه الاداة لعرض قائمة بجميع مستندات الشريك وحالة كل منها وسجل التدقيق الكامل. لا تتطلب أي معلمات. تتطلب المصادقة. وصلاحية الشريك.",
+    "requires_auth": true,
+    "endpoint": "/partners/me/documents",
+    "method": "GET",
+    "parameters": []
+  },
     {
     "tool_name": "get_partner_required_documents",
     "description": "Use this tool to retrieve all required and optional document types that transport partners must provide in order to join the Ehjezli land transport platform. The response includes document names and whether each document is mandatory or optional.",
