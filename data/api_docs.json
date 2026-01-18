@@ -4,6 +4,7 @@
     "description": "تستخدم هذه الأداة لجلب معلومات المستخدم المصادق عليه حالياً. لا تتطلب أي معلمات.",
     "endpoint": "/users/me",
     "method": "GET",
+    "requires_auth": true,
     "parameters": []
   },
 
