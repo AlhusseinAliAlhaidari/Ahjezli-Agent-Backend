@@ -1,4 +1,11 @@
 [
+  {
+    "tool_name": "read_user_me",
+    "description": "تستخدم هذه الأداة لجلب معلومات المستخدم المصادق عليه حالياً. لا تتطلب أي معلمات.",
+    "endpoint": "/users/me",
+    "method": "GET",
+    "parameters": []
+  },
 
   {
     "tool_name": "search_trips",
