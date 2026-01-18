@@ -1696,3 +1696,9 @@ httpx.ReadTimeout
 2026-01-17 23:39:03,254 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-70b-versatile until 23:40:03 | Reason: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned
 2026-01-17 23:39:05,058 - ModelRegistry - WARNING - BLACKLIST: mixtral-8x22b-instruct-v0.1 until 23:40:05 | Reason: Error code: 404 - {'error': {'message': 'The model `mixtral-8x22b-instruct-v0.1` does not exist or y
 2026-01-17 23:39:06,884 - ModelRegistry - WARNING - BLACKLIST: gemma2-9b-it until 23:40:06 | Reason: Error code: 400 - {'error': {'message': 'The model `gemma2-9b-it` has been decommissioned and is no 
+2026-01-18 02:54:42,036 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 02:55:42 | Reason: 'NoneType' object has no attribute 'strip'
+2026-01-18 02:54:43,718 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 02:55:43 | Reason: 'NoneType' object has no attribute 'strip'
+2026-01-18 02:54:45,522 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 02:55:45 | Reason: 'NoneType' object has no attribute 'strip'
+2026-01-18 02:54:47,030 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 02:55:47 | Reason: 'NoneType' object has no attribute 'strip'
+2026-01-18 02:54:48,590 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 02:55:48 | Reason: Error code: 400 - {'error': {'message': "tool call validation failed: parameters for tool get_availa
+2026-01-18 02:54:50,704 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 02:55:50 | Reason: 'NoneType' object has no attribute 'strip'

@@ -79,7 +79,7 @@ class ToolFactory:
         async def tool_wrapper(params: Dict[str, Any]) -> str:
             # ======== 1. قراءة execution context ========
             ctx = current_execution_context.get()
-            access_token = ctx.get("access_token").strip()
+            access_token = ctx.get("access_token")
 
             print("===== TOOL EXECUTION =====")
             print("TOOL:", tool_name)
