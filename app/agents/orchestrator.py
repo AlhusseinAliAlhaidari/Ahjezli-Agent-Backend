@@ -682,10 +682,164 @@
 #                 }
 
 #!=================
+# #app/agents/orchestrator.py
+
+# import logging
+# import time
+# from typing import AsyncGenerator, Dict, List, Optional
+# from threading import Lock
+
+# from langchain_groq import ChatGroq
+# from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, BaseMessage
+# from langgraph.prebuilt import create_react_agent
+
+# from app.core.config import settings
+# from app.core.registry import ModelRegistry
+# from app.services.api_service import ApiService
+# from app.core.execution_context import current_execution_context
+
+
+
+# logger = logging.getLogger("OrchestratorFullDebug")
+
+# SESSION_TTL_SECONDS = 900
+# MAX_SESSIONS = 5000
+# MAX_TOTAL_MESSAGES = 100_000
+
+# class SmartMemory:
+#     def __init__(self, window_size: int = 10):
+#         self.window_size = window_size
+#         self.window: List[BaseMessage] = []
+#         self.last_tool_used: Optional[str] = None
+#         self.last_used: float = time.time()
+
+#     def touch(self):
+#         self.last_used = time.time()
+
+#     def add_message(self, message: BaseMessage):
+#         self.touch()
+#         self.window.append(message)
+#         self.window = self.window[-self.window_size:]
+
+#     def record_tool_use(self, tool_name: str):
+#         self.touch()
+#         self.last_tool_used = tool_name
+
+#     def render_execution_context(self) -> str:
+#         if not self.last_tool_used:
+#             return ""
+#         return f"Execution context:\n- Last tool used: {self.last_tool_used}"
+
+# class MemoryStore:
+#     def __init__(self):
+#         self._store: Dict[str, SmartMemory] = {}
+#         self._lock = Lock()
+
+#     def _cleanup_expired(self):
+#         now = time.time()
+#         expired = [sid for sid, mem in self._store.items() if now - mem.last_used > SESSION_TTL_SECONDS]
+#         for sid in expired:
+#             self._store.pop(sid, None)
+
+#     def _enforce_pressure_limits(self):
+#         if len(self._store) > MAX_SESSIONS:
+#             sorted_sessions = sorted(self._store.items(), key=lambda item: item[1].last_used)
+#             for sid, _ in sorted_sessions[:len(self._store) - MAX_SESSIONS]:
+#                 self._store.pop(sid, None)
+#         total_messages = sum(len(mem.window) for mem in self._store.values())
+#         if total_messages > MAX_TOTAL_MESSAGES:
+#             sorted_sessions = sorted(self._store.items(), key=lambda item: item[1].last_used)
+#             for _, mem in sorted_sessions:
+#                 mem.window.clear()
+#                 if sum(len(m.window) for m in self._store.values()) <= MAX_TOTAL_MESSAGES:
+#                     break
+
+#     def get(self, session_id: str) -> SmartMemory:
+#         with self._lock:
+#             self._cleanup_expired()
+#             self._enforce_pressure_limits()
+#             if session_id not in self._store:
+#                 self._store[session_id] = SmartMemory()
+#             memory = self._store[session_id]
+#             memory.touch()
+#             return memory
+
+# class OrchestratorAgent:
+#     def __init__(self, tools: List):
+#         self.tools = tools
+#         self.registry = ModelRegistry()
+#         self.memory_store = MemoryStore()
+#         profile_content = settings.profile
+#         docs_info = settings.api_docs
+#         self.system_prompt = f"""
+# You are the official assistant of the platform.
+
+# Rules:
+# - Use tools only when needed.
+# - Never invent data.
+# - Never assume parameters.
+# - Only rely on tool outputs.
+# - If information is missing, ask the user clearly.
+
+# Platform profile:
+# {profile_content}
+
+# Available tools and their documentation:
+# {docs_info}
+# """.strip()
+    
+#     async def process_request(self, user_input: str, session_id: str, access_token: Optional[str] = None) -> AsyncGenerator[Dict, None]:
+#         memory = self.memory_store.get(session_id)
+#         current_execution_context.set({
+#     "session_id": session_id,
+#     "access_token": access_token
+#         })
+
+#         print("\n=== DEBUG EXECUTION CONTEXT ===")
+#         print(current_execution_context.get())
+
+#         messages: List[BaseMessage] = [SystemMessage(content=self.system_prompt)]
+#         execution_hint = memory.render_execution_context()
+#         if execution_hint:
+#             messages.append(SystemMessage(content=execution_hint))
+#         messages.extend(memory.window)
+#         messages.append(HumanMessage(content=user_input))
+
+#         inputs = {"messages": messages, "execution_context": current_execution_context.get()}
+
+#         for model_name in self.registry.get_available_models():
+#             try:
+#                 llm = ChatGroq(model_name=model_name, api_key=settings.GROQ_API_KEY, temperature=0)
+#                 agent = create_react_agent(llm, self.tools)
+#                 async for event in agent.astream(inputs, config={"recursion_limit":40}, stream_mode="values"):
+#                     if not event.get("messages"):
+#                         continue
+#                     last_message = event["messages"][-1]
+                    
+
+#                     if hasattr(last_message, "tool_calls") and last_message.tool_calls:
+#                         for call in last_message.tool_calls:
+#                             tool_name = call.get("name")
+#                             if tool_name:
+#                                 memory.record_tool_use(tool_name)
+#                             print(f"\n=== DEBUG TOOL CALL START ===\nTool: {tool_name}\nExecution Context: {current_execution_context.get()}\n")
+#                             yield {"type": "status", "payload": f"Executing tool: {tool_name}"}
+#                     elif isinstance(last_message, AIMessage):
+#                         if last_message.content:
+#                             memory.add_message(HumanMessage(content=user_input))
+#                             memory.add_message(AIMessage(content=last_message.content))
+#                             print(f"\n=== DEBUG AI RESPONSE ===\n{last_message.content}\n")
+#                             yield {"type": "final", "payload": last_message.content}
+#                 return
+#             except Exception as e:
+#                 logger.error(f"Model {model_name} failed: {e}")
+#                 yield {"type": "status", "payload": f"Model {model_name} failed: {e}"}
+
+
+#!!============
 import logging
-import time
+import json
 from typing import AsyncGenerator, Dict, List, Optional
-from threading import Lock
 
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, BaseMessage
@@ -693,90 +847,27 @@ from langgraph.prebuilt import create_react_agent
 
 from app.core.config import settings
 from app.core.registry import ModelRegistry
-from app.services.api_service import ApiService
 from app.core.execution_context import current_execution_context
+# استدعاء محرك الذاكرة من الكود المرفق الأول
+from app.core.memory import memory_engine 
 
-
-
-logger = logging.getLogger("OrchestratorFullDebug")
-
-SESSION_TTL_SECONDS = 900
-MAX_SESSIONS = 5000
-MAX_TOTAL_MESSAGES = 100_000
-
-class SmartMemory:
-    def __init__(self, window_size: int = 10):
-        self.window_size = window_size
-        self.window: List[BaseMessage] = []
-        self.last_tool_used: Optional[str] = None
-        self.last_used: float = time.time()
-
-    def touch(self):
-        self.last_used = time.time()
-
-    def add_message(self, message: BaseMessage):
-        self.touch()
-        self.window.append(message)
-        self.window = self.window[-self.window_size:]
-
-    def record_tool_use(self, tool_name: str):
-        self.touch()
-        self.last_tool_used = tool_name
-
-    def render_execution_context(self) -> str:
-        if not self.last_tool_used:
-            return ""
-        return f"Execution context:\n- Last tool used: {self.last_tool_used}"
-
-class MemoryStore:
-    def __init__(self):
-        self._store: Dict[str, SmartMemory] = {}
-        self._lock = Lock()
-
-    def _cleanup_expired(self):
-        now = time.time()
-        expired = [sid for sid, mem in self._store.items() if now - mem.last_used > SESSION_TTL_SECONDS]
-        for sid in expired:
-            self._store.pop(sid, None)
-
-    def _enforce_pressure_limits(self):
-        if len(self._store) > MAX_SESSIONS:
-            sorted_sessions = sorted(self._store.items(), key=lambda item: item[1].last_used)
-            for sid, _ in sorted_sessions[:len(self._store) - MAX_SESSIONS]:
-                self._store.pop(sid, None)
-        total_messages = sum(len(mem.window) for mem in self._store.values())
-        if total_messages > MAX_TOTAL_MESSAGES:
-            sorted_sessions = sorted(self._store.items(), key=lambda item: item[1].last_used)
-            for _, mem in sorted_sessions:
-                mem.window.clear()
-                if sum(len(m.window) for m in self._store.values()) <= MAX_TOTAL_MESSAGES:
-                    break
-
-    def get(self, session_id: str) -> SmartMemory:
-        with self._lock:
-            self._cleanup_expired()
-            self._enforce_pressure_limits()
-            if session_id not in self._store:
-                self._store[session_id] = SmartMemory()
-            memory = self._store[session_id]
-            memory.touch()
-            return memory
+logger = logging.getLogger("OrchestratorAgent")
 
 class OrchestratorAgent:
     def __init__(self, tools: List):
         self.tools = tools
         self.registry = ModelRegistry()
-        self.memory_store = MemoryStore()
+        
         profile_content = settings.profile
         docs_info = settings.api_docs
-        self.system_prompt = f"""
+        
+        # System Prompt يوجه النموذج للاعتماد على السياق
+        self.base_system_prompt = f"""
 You are the official assistant of the platform.
-
 Rules:
 - Use tools only when needed.
 - Never invent data.
-- Never assume parameters.
-- Only rely on tool outputs.
+- Only rely on tool outputs or the provided CONTEXT below.
 - If information is missing, ask the user clearly.
 
 Platform profile:
@@ -787,48 +878,70 @@ Available tools and their documentation:
 """.strip()
     
     async def process_request(self, user_input: str, session_id: str, access_token: Optional[str] = None) -> AsyncGenerator[Dict, None]:
-        memory = self.memory_store.get(session_id)
+        # تحديد مفتاح المستخدم
+        user_key = access_token if access_token else f"session:{session_id}"
+        
         current_execution_context.set({
-    "session_id": session_id,
-    "access_token": access_token
+            "session_id": session_id,
+            "access_token": access_token,
+            "user_id": user_key
         })
 
-        print("\n=== DEBUG EXECUTION CONTEXT ===")
-        print(current_execution_context.get())
+        # === بناء السياق الذكي (الحل لمشكلة الحجم 413) ===
+        # يجلب فقط: الملخص + آخر الرسائل + الذكريات المهمة
+        memory_context = memory_engine.build_context(user_key, user_input)
 
-        messages: List[BaseMessage] = [SystemMessage(content=self.system_prompt)]
-        execution_hint = memory.render_execution_context()
-        if execution_hint:
-            messages.append(SystemMessage(content=execution_hint))
-        messages.extend(memory.window)
+        enriched_system_prompt = self.base_system_prompt
+        
+        if memory_context.get("summary"):
+            enriched_system_prompt += f"\n\n### CONVERSATION SUMMARY:\n{memory_context['summary']}"
+        
+        if memory_context.get("relevant_memories"):
+            # تحويل الذكريات لنص JSON مختصر
+            memories_text = "\n".join([json.dumps(m, ensure_ascii=False) for m in memory_context['relevant_memories']])
+            enriched_system_prompt += f"\n\n### RELEVANT MEMORY:\n{memories_text}"
+
+        messages: List[BaseMessage] = [SystemMessage(content=enriched_system_prompt)]
+
+        # إضافة الرسائل الأخيرة فقط
+        for text in memory_context.get("recent_messages", []):
+            messages.append(HumanMessage(content=f"[History]: {text}"))
+
         messages.append(HumanMessage(content=user_input))
 
-        inputs = {"messages": messages, "execution_context": current_execution_context.get()}
+        # حفظ سؤال المستخدم
+        memory_engine.ingest_text(user_key, f"User: {user_input}")
 
+        inputs = {"messages": messages}
+
+        # تشغيل النماذج مع معالجة الأخطاء
         for model_name in self.registry.get_available_models():
             try:
                 llm = ChatGroq(model_name=model_name, api_key=settings.GROQ_API_KEY, temperature=0)
                 agent = create_react_agent(llm, self.tools)
-                async for event in agent.astream(inputs, config={"recursion_limit":40}, stream_mode="values"):
-                    if not event.get("messages"):
-                        continue
+                
+                final_response = ""
+
+                async for event in agent.astream(inputs, config={"recursion_limit": 15}, stream_mode="values"):
+                    if not event.get("messages"): continue
                     last_message = event["messages"][-1]
-                    
 
                     if hasattr(last_message, "tool_calls") and last_message.tool_calls:
                         for call in last_message.tool_calls:
-                            tool_name = call.get("name")
-                            if tool_name:
-                                memory.record_tool_use(tool_name)
-                            print(f"\n=== DEBUG TOOL CALL START ===\nTool: {tool_name}\nExecution Context: {current_execution_context.get()}\n")
-                            yield {"type": "status", "payload": f"Executing tool: {tool_name}"}
+                            yield {"type": "status", "payload": f"Using tool: {call.get('name')}"}
+
                     elif isinstance(last_message, AIMessage):
                         if last_message.content:
-                            memory.add_message(HumanMessage(content=user_input))
-                            memory.add_message(AIMessage(content=last_message.content))
-                            print(f"\n=== DEBUG AI RESPONSE ===\n{last_message.content}\n")
-                            yield {"type": "final", "payload": last_message.content}
+                            final_response = last_message.content
+                            yield {"type": "final", "payload": final_response}
+                
+                # حفظ الرد النهائي
+                if final_response:
+                    memory_engine.ingest_text(user_key, f"AI: {final_response}")
+                
                 return
+
             except Exception as e:
                 logger.error(f"Model {model_name} failed: {e}")
-                yield {"type": "status", "payload": f"Model {model_name} failed: {e}"}
+                self.registry.report_failure(model_name, str(e))
+                yield {"type": "status", "payload": f"Error with {model_name}, switching..."}

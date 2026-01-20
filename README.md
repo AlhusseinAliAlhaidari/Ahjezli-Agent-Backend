@@ -42,6 +42,7 @@ ehjezli_agent/
 ├── app/
 │   ├── agents/         # Orchestrator & Logic
 │   ├── core/           # Config, Registry, Memory Manager
+│   ├── memory/         # Memory Management
 │   ├── services/       # External APIs
 │   ├── tools/          # Dynamic Tool Factory
 │   └── main.py         # Application Entry Point

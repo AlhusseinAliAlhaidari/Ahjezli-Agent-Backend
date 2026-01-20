@@ -1702,3 +1702,35 @@ httpx.ReadTimeout
 2026-01-18 02:54:47,030 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 02:55:47 | Reason: 'NoneType' object has no attribute 'strip'
 2026-01-18 02:54:48,590 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 02:55:48 | Reason: Error code: 400 - {'error': {'message': "tool call validation failed: parameters for tool get_availa
 2026-01-18 02:54:50,704 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 02:55:50 | Reason: 'NoneType' object has no attribute 'strip'
+2026-01-20 23:55:17,320 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 23:56:17 | Reason: MemoryEvent.__init__() missing 1 required positional argument: 'user_id'
+2026-01-20 23:55:17,321 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 23:56:17 | Reason: MemoryEvent.__init__() missing 1 required positional argument: 'user_id'
+2026-01-20 23:55:17,322 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 23:56:17 | Reason: MemoryEvent.__init__() missing 1 required positional argument: 'user_id'
+2026-01-20 23:55:17,323 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 23:56:17 | Reason: MemoryEvent.__init__() missing 1 required positional argument: 'user_id'
+2026-01-20 23:55:17,324 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 23:56:17 | Reason: MemoryEvent.__init__() missing 1 required positional argument: 'user_id'
+2026-01-20 23:55:17,325 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 23:56:17 | Reason: MemoryEvent.__init__() missing 1 required positional argument: 'user_id'
+2026-01-21 00:54:02,317 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 00:55:02 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 00:54:04,527 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 00:55:04 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 00:54:07,262 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 00:55:07 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 00:54:10,074 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 00:55:10 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 00:54:11,765 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 00:55:11 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 00:54:12,914 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 00:55:12 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 01:05:08,734 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 01:06:08 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 01:05:09,943 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 01:06:09 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 01:05:11,294 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 01:06:11 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 01:05:12,453 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 01:06:12 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 01:05:13,593 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 01:06:13 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 01:05:14,682 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 01:06:14 | Reason: 'HumanMessage' object has no attribute 'get'
+2026-01-21 01:30:30,291 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 01:35:30 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-120b` in organi
+2026-01-21 01:30:32,643 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 01:31:32 | Reason: Error code: 400 - {'error': {'message': "Tool call validation failed: tool call validation failed: p
+2026-01-21 01:31:29,378 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 01:32:29 | Reason: Error code: 400 - {'error': {'message': "Tool call validation failed: tool call validation failed: p
+2026-01-21 01:31:33,063 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 01:32:33 | Reason: Error code: 400 - {'error': {'message': "tool call validation failed: parameters for tool get_availa
+2026-01-21 01:31:40,025 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 01:36:40 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organizatio
+2026-01-21 01:31:42,786 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 01:32:42 | Reason: Error code: 400 - {'error': {'message': "tool call validation failed: parameters for tool get_availa
+2026-01-21 01:47:41,535 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 01:48:41 | Reason: Error code: 400 - {'error': {'message': 'Failed to parse tool call arguments as JSON', 'type': 'inva
+2026-01-21 01:51:53,515 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 01:56:53 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-120b` in organi
+2026-01-21 01:55:59,613 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 02:00:59 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organiz
+2026-01-21 01:57:15,873 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 02:02:15 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-safeguard-20b` 
+2026-01-21 02:00:29,031 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 02:05:29 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-120b` in organi
+2026-01-21 02:00:34,730 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 02:05:34 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `meta-llama/llama-4-maverick-17
+2026-01-21 02:00:40,647 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 02:05:40 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organizatio
+2026-01-21 02:00:46,336 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 02:05:46 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
