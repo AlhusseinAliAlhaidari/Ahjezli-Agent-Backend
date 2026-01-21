@@ -142,7 +142,7 @@
 
 #!!============================
 import json
-from typing import List, Dict, Any, Type, Union
+from typing import List, Dict, Any, Type
 from pydantic import create_model, Field, BaseModel
 from langchain_core.tools import StructuredTool
 from app.core.config import settings
@@ -161,7 +161,6 @@ class ToolFactory:
 
     @staticmethod
     def _create_pydantic_model(tool_name: str, parameters: List[Dict[str, Any]]) -> Type[BaseModel]:
-        # بناء المخطط (Schema) بشكل ديناميكي لدعم نماذج Llama/Qwen
         fields = {}
         for param in parameters:
             name = param["name"]
@@ -181,82 +180,70 @@ class ToolFactory:
         
         return create_model(f"{tool_name}Schema", **fields)
 
-    # =========================================================
-    #  DYNAMIC COMPRESSION ENGINE (محرك الضغط الديناميكي)
-    # =========================================================
+    # === محرك تحويل البيانات (بدون حذف) ===
     
     @staticmethod
     def _flatten_dict(d: Dict[str, Any], parent_key: str = '', sep: str = '.') -> Dict[str, Any]:
-        """
-        دالة تقوم بتسطيح الكائنات المتداخلة لتوفير المساحة.
-        مثال: {'city': {'name': 'Riyadh'}} -> {'city.name': 'Riyadh'}
-        """
         items = []
         for k, v in d.items():
             new_key = f"{parent_key}{sep}{k}" if parent_key else k
             
             if isinstance(v, dict):
                 items.extend(ToolFactory._flatten_dict(v, new_key, sep=sep).items())
+            
             elif isinstance(v, list):
-                # القوائم الفرعية نختصرها لعدد العناصر لتوفير التوكنز
-                # إلا إذا كانت قائمة بسيطة جداً (أرقام أو نصوص)
-                if v and isinstance(v[0], (str, int, float)) and len(v) < 5:
-                    items.append((new_key, str(v)))
+                if not v:
+                    items.append((new_key, "[]"))
+                    continue
+                
+                # === التعديل الهام هنا لضمان عدم ضياع المقاعد ===
+                # إذا كانت القائمة تحتوي على بيانات (أقل من 20 عنصر)، حولها لنص واعرضها كاملة
+                # هذا يضمن ظهور Seats IDs للنموذج
+                if len(v) < 20: 
+                    # تحويل القائمة إلى نص مقروء
+                    # مثال: [{id:1}, {id:2}] -> "(id:1), (id:2)"
+                    try:
+                        str_list = [str(x) for x in v]
+                        items.append((new_key, ", ".join(str_list)))
+                    except:
+                        items.append((new_key, str(v)))
                 else:
-                    items.append((new_key, f"[List: {len(v)} items]"))
+                    # إذا كانت القائمة ضخمة جداً (أكثر من 20)، هنا فقط نقوم بالتلخيص
+                    items.append((new_key, f"[List with {len(v)} items - too large]"))
             else:
                 items.append((new_key, v))
         return dict(items)
 
     @staticmethod
     def _universal_compress(data: Any) -> str:
-        """
-        يحول أي JSON إلى تنسيق نصي مضغوط (جدول أو قائمة) ديناميكياً
-        بدون معرفة مسبقة بنوع البيانات.
-        """
-        # الحالة 1: البيانات عبارة عن قائمة (مثل قائمة رحلات، قائمة مستندات)
+        """تحويل البيانات إلى تنسيق مقروء ومضغوط دون حذف التفاصيل"""
         if isinstance(data, list) and len(data) > 0:
             if isinstance(data[0], dict):
-                # نقوم بتسطيح أول عنصر لاستخراج العناوين (Headers)
+                # تحويل إلى جدول
                 sample_flat = ToolFactory._flatten_dict(data[0])
                 headers = list(sample_flat.keys())
-                
-                # تقليص عدد الأعمدة: نأخذ فقط أول 6-8 حقول لتجنب العرض الزائد
-                # عادة الحقول المهمة (ID, Name, Price) تكون في البداية
-                headers = headers[:8] 
+                # نأخذ أكبر عدد ممكن من الأعمدة المهمة
+                headers = headers[:15] 
                 
                 lines = []
-                # إنشاء سطر العنوان:  ID | Name | Price ...
                 header_line = " | ".join(headers)
                 lines.append(header_line)
-                lines.append("-" * len(header_line)) # فاصل
+                lines.append("-" * len(header_line))
                 
-                # تعبئة الصفوف
                 for item in data:
                     flat_item = ToolFactory._flatten_dict(item)
                     row_values = []
                     for h in headers:
                         val = str(flat_item.get(h, "-"))
-                        # قص القيم الطويلة جداً
-                        if len(val) > 100: val = val[:97] + "..."
+                        # تنظيف النص من الأسطر الجديدة لضمان سلامة الجدول
+                        val = val.replace("\n", " ")
+                        if len(val) > 100: val = val[:97] + "..." # قص النصوص الطويلة جداً فقط
                         row_values.append(val)
                     lines.append(" | ".join(row_values))
                 
                 return "\n".join(lines)
-            else:
-                # قائمة بسيطة (strings/ints)
-                return str(data)
-
-        # الحالة 2: البيانات عبارة عن كائن واحد (تفاصيل رحلة، بروفايل مستخدم)
-        elif isinstance(data, dict):
-            flat_data = ToolFactory._flatten_dict(data)
-            lines = []
-            for k, v in flat_data.items():
-                lines.append(f"{k}: {v}")
-            return "\n".join(lines)
-
-        # الحالة 3: بيانات بسيطة
-        return str(data)
+        
+        return json.dumps(data, ensure_ascii=False) # العودة للوضع الطبيعي إذا لم تكن قائمة
 
     @staticmethod
     def _create_single_tool(doc: Dict[str, Any]) -> StructuredTool:
@@ -273,14 +260,12 @@ class ToolFactory:
             ctx = current_execution_context.get()
             access_token = ctx.get("access_token")
 
-            # التحقق من المصادقة
             headers = {}
             if requires_auth:
                 if not access_token:
-                    return "ERROR: AUTH_REQUIRED. Please login first."
+                    return "ERROR: AUTH_REQUIRED."
                 headers["Authorization"] = f"Bearer {access_token}"
 
-            # بناء الرابط
             endpoint = endpoint_template
             query_params = {}
             body = {}
@@ -306,11 +291,8 @@ class ToolFactory:
                     headers=headers
                 )
                 
-                # === تطبيق الضغط الديناميكي الشامل ===
-                # سيتحول الـ JSON الضخم إلى جدول نصي صغير تلقائياً
-                compressed_output = ToolFactory._universal_compress(result)
-                
-                return compressed_output
+                # استخدام الضغط الذكي الذي يحافظ على البيانات
+                return ToolFactory._universal_compress(result)
 
             except Exception as e:
                 return f"TOOL_ERROR: {str(e)}"

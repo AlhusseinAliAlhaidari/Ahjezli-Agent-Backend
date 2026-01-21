@@ -67,5 +67,5 @@ class MemoryEngine:
         return {
             "summary": self.summary.get(user_id),
             "recent_messages": self.stm.get_recent(user_id),
-            "relevant_memories": self.ltm.search(user_id, vector, limit=3)
+            "relevant_memories": self.ltm.search(user_id, vector, limit=10)
         }
