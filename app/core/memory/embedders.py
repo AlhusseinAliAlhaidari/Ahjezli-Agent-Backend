@@ -34,8 +34,8 @@ class LocalHuggingFaceEmbedder(Embedder):
     نسخة خفيفة جداً (Lightweight) باستخدام FastEmbed
     """
     def __init__(self):
-        # تم تغيير الموديل إلى موديل مدعوم رسمياً ويدعم العربية
-        # هذا الموديل خفيف وممتاز للبحث الدلالي متعدد اللغات
+        # --- التعديل هنا ---
+        # استبدلنا الموديل غير المدعوم بموديل Paraphrase Multilingual المدعوم رسمياً
         self.model = TextEmbedding(model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
 
     def embed(self, text: str) -> List[float]:
