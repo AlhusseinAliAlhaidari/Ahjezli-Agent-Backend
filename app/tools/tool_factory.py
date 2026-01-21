@@ -238,7 +238,7 @@ class ToolFactory:
                     for h in headers:
                         val = str(flat_item.get(h, "-"))
                         # قص القيم الطويلة جداً
-                        if len(val) > 30: val = val[:27] + "..."
+                        if len(val) > 100: val = val[:97] + "..."
                         row_values.append(val)
                     lines.append(" | ".join(row_values))
                 
