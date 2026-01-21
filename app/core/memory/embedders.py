@@ -1,19 +1,20 @@
 from typing import List
-import math
-
+# يجب تثبيت المكتبة: pip install sentence-transformers
+from sentence_transformers import SentenceTransformer
 
 class Embedder:
     def embed(self, text: str) -> List[float]:
         raise NotImplementedError
 
+class LocalHuggingFaceEmbedder(Embedder):
+    """
+    Embedder حقيقي يفهم المعنى الدلالي للنصوص (عربي/إنجليزي)
+    """
+    def __init__(self, model_name: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"):
+        # هذا الموديل ممتاز للغة العربية والإنجليزية وخفيف الحجم
+        self.model = SentenceTransformer(model_name)
 
-class SimpleHashEmbedder(Embedder):
-    """
-    Embedder خفيف، سريع، لا يحتاج موديل
-    (ممتاز للإنتاج كبداية)
-    """
     def embed(self, text: str) -> List[float]:
-        vec = [0.0] * 64
-        for i, b in enumerate(text.encode("utf-8")):
-            vec[i % 64] += b / 255.0
-        return vec
+        # تحويل النص إلى متجه (Vector) حقيقي
+        embeddings = self.model.encode(text)
+        return embeddings.tolist()
