@@ -873,8 +873,6 @@ Rules:
 Platform profile:
 {profile_content}
 
-Available tools and their documentation:
-{docs_info}
 """.strip()
     
     async def process_request(self, user_input: str, session_id: str, access_token: Optional[str] = None) -> AsyncGenerator[Dict, None]:

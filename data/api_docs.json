@@ -7,16 +7,27 @@
     "requires_auth": true,
     "parameters": []
   },
-
   {
     "tool_name": "search_trips",
     "description": "Use this tool to find available trip IDs for a given route and date. It requires departure city, arrival city, and a date (YYYY-MM-DD).",
     "endpoint": "/trips/search/",
     "method": "GET",
     "parameters": [
-      {"name": "from_city_id", "type": "integer", "description": "The ID of the departure city."},
-      {"name": "to_city_id", "type": "integer", "description": "The ID of the arrival city."},
-      {"name": "departure_date", "type": "string", "description": "The date of the trip in YYYY-MM-DD format."}
+      {
+        "name": "from_city_id",
+        "type": "integer",
+        "description": "The ID of the departure city."
+      },
+      {
+        "name": "to_city_id",
+        "type": "integer",
+        "description": "The ID of the arrival city."
+      },
+      {
+        "name": "departure_date",
+        "type": "string",
+        "description": "The date of the trip in YYYY-MM-DD format."
+      }
     ]
   },
   {
@@ -25,7 +36,11 @@
     "endpoint": "/trips/{trip_id}",
     "method": "GET",
     "parameters": [
-      {"name": "trip_id", "type": "integer", "description": "The unique ID of the trip."}
+      {
+        "name": "trip_id",
+        "type": "integer",
+        "description": "The unique ID of the trip."
+      }
     ]
   },
   {
@@ -42,16 +57,16 @@
     "method": "GET",
     "parameters": [
       {
-       "name": "skip",
-       "type": "integer",
+        "name": "skip",
+        "type": "integer",
         "description": "The number of items to skip. إذا لم يحدد المستخدم skip → استخدم skip = 1.",
         "default": 1,
         "required": true
       },
       {
         "name": "limit",
-       "type": "integer",
-       "required": true,
+        "type": "integer",
+        "required": true,
         "description": "The number of items to return.",
         "default": 5
       }
@@ -65,7 +80,7 @@
     "method": "GET",
     "parameters": []
   },
-    {
+  {
     "tool_name": "get_partner_required_documents",
     "description": "Use this tool to retrieve all required and optional document types that transport partners must provide in order to join the Ehjezli land transport platform. The response includes document names and whether each document is mandatory or optional.",
     "endpoint": "/partners/document-types",
@@ -73,16 +88,15 @@
     "parameters": []
   },
   {
-     "tool_name": "get_my_bookings",
+    "tool_name": "get_my_bookings",
     "description": "Use this tool to retrieve the bookings of the authenticated user.",
     "endpoint": "/bookings/bookings",
     "method": "GET",
     "requires_auth": true,
     "parameters": []
   },
-
-    {
-     "tool_name": "get_bookings_by_user",
+  {
+    "tool_name": "get_bookings_by_user",
     "description": "Use this tool to retrieve bookings for a specific user by their user ID.",
     "endpoint": "/bookings/bookings/{booking_id}",
     "method": "GET",
@@ -90,15 +104,14 @@
     "parameters": [
       {
         "name": "booking_id",
-         "type": "integer",
-          "required": true,
-          "description": "The unique ID of the booking."
-        }
+        "type": "integer",
+        "required": true,
+        "description": "The unique ID of the booking."
+      }
     ]
   },
-
   {
-     "tool_name": "cancel_booking",
+    "tool_name": "cancel_booking",
     "description": "Use this tool to cancel a specific booking.",
     "endpoint": "/bookings/bookings/{booking_id}",
     "method": "DELETE",
@@ -106,78 +119,896 @@
     "parameters": [
       {
         "name": "booking_id",
-         "type": "integer",
-          "required": true,
-          "description": "The unique ID of the booking."
-        }
+        "type": "integer",
+        "required": true,
+        "description": "The unique ID of the booking."
+      }
+    ]
+  },
+  {
+    "tool_name": "create_booking",
+    "description": "Use this tool to create a new booking for the authenticated user.",
+    "endpoint": "/bookings/bookings/",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "trip_id",
+        "type": "integer",
+        "required": true,
+        "description": "The ID of the trip to book."
+      },
+      {
+        "name": "seats",
+        "type": "array",
+        "required": true,
+        "description": "List of seat objects with passenger data.",
+        "items": [
+          {
+            "name": "trip_seat_id",
+            "type": "integer",
+            "required": true,
+            "description": "The ID of the seat in the trip."
+          },
+          {
+            "name": "passenger_name",
+            "type": "string",
+            "required": true,
+            "description": "Full name of the passenger. "
+          },
+          {
+            "name": "date_of_birth",
+            "type": "string",
+            "required": true,
+            "description": "Date of birth in YYYY-MM-DD format."
+          },
+          {
+            "name": "gender_id",
+            "type": "integer",
+            "required": true,
+            "description": "Gender ID of the passenger."
+          },
+          {
+            "name": "nationality_id",
+            "type": "integer",
+            "required": true,
+            "description": "Nationality ID of the passenger."
+          },
+          {
+            "name": "document_type_id",
+            "type": "integer",
+            "required": true,
+            "description": "Document type ID."
+          },
+          {
+            "name": "passenger_document_number",
+            "type": "string",
+            "required": true,
+            "description": "The document number of the passenger."
+          }
+        ]
+      }
     ]
   },
 
-{
-  "tool_name": "create_booking",
-  "description": "Use this tool to create a new booking for the authenticated user.",
-  "endpoint": "/bookings/bookings/",
-  "method": "POST",
-  "requires_auth": true,
-  "parameters": [
-    {
-      "name": "trip_id",
-      "type": "integer",
-      "required": true,
-      "description": "The ID of the trip to book."
-    },
-    {
-      "name": "seats",
-      "type": "array",
-      "required": true,
-      "description": "List of seat objects with passenger data.",
-      "items": [
-        {
-          "name": "trip_seat_id",
-          "type": "integer",
-          "required": true,
-          "description": "The ID of the seat in the trip."
-        },
-        {
-          "name": "passenger_name",
-          "type": "string",
-          "required": true,
-          "description": "Full name of the passenger. "
-        },
-        {
-          "name": "date_of_birth",
-          "type": "string",
-          "required": true,
-          "description": "Date of birth in YYYY-MM-DD format."
-        },
-        {
-          "name": "gender_id",
-          "type": "integer",
-          "required": true,
-          "description": "Gender ID of the passenger."
-        },
-        {
-          "name": "nationality_id",
-          "type": "integer",
-          "required": true,
-          "description": "Nationality ID of the passenger."
-        },
-        {
-          "name": "document_type_id",
-          "type": "integer",
-          "required": true,
-          "description": "Document type ID."
-        },
-        {
-          "name": "passenger_document_number",
-          "type": "string",
-          "required": true,
-          "description": "The document number of the passenger."
-        }
-      ]
-    }
-  ]
-}
-
-
+  {
+    "tool_name": "create_user",
+    "description": "تستخدم هذه الأداة لإنشاء حساب مستخدم جديد (تسجيل). يجب تقديم البريد الإلكتروني، كلمة المرور، الاسم الكامل، ورقم الهاتف.",
+    "endpoint": "/users/",
+    "method": "POST",
+    "requires_auth": false,
+    "parameters": [
+      {
+        "name": "email",
+        "type": "string",
+        "required": true,
+        "description": "البريد الإلكتروني للمستخدم الجديد"
+      },
+      {
+        "name": "password",
+        "type": "string",
+        "required": true,
+        "description": "كلمة المرور"
+      },
+      {
+        "name": "full_name",
+        "type": "string",
+        "required": true,
+        "description": "الاسم الكامل للمستخدم"
+      },
+      {
+        "name": "phone_number",
+        "type": "string",
+        "required": true,
+        "description": "رقم الهاتف"
+      }
+    ]
+  },
+  {
+    "tool_name": "create_partner_request",
+    "description": "تستخدم هذه الأداة لإنشاء طلب شراكة جديد. يجب أن يكون المستخدم مسجلاً للدخول. يتطلب معلومات الشركة مثل الاسم التجاري، رقم السجل التجاري، وتفاصيل الاتصال.",
+    "endpoint": "/partners/",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "business_name",
+        "type": "string",
+        "required": true,
+        "description": "الاسم التجاري للشركة"
+      },
+      {
+        "name": "commercial_registration_number",
+        "type": "string",
+        "required": true,
+        "description": "رقم السجل التجاري"
+      },
+      {
+        "name": "contact_email",
+        "type": "string",
+        "required": true,
+        "description": "البريد الإلكتروني للتواصل"
+      },
+      {
+        "name": "contact_phone",
+        "type": "string",
+        "required": true,
+        "description": "رقم الهاتف للتواصل"
+      }
+    ]
+  },
+  {
+    "tool_name": "add_partner_bus",
+    "description": "تستخدم هذه الأداة لإضافة حافلة جديدة إلى أسطول الشريك المعتمد. يجب تحديد رقم اللوحة، نوع الحافلة، السعة، ومعرف التخطيط.",
+    "endpoint": "/partners/me/buses/",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "plate_number",
+        "type": "string",
+        "required": true,
+        "description": "رقم لوحة الحافلة"
+      },
+      {
+        "name": "bus_class_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف فئة الحافلة (مثل VIP، عادي، إلخ)"
+      },
+      {
+        "name": "capacity",
+        "type": "integer",
+        "required": true,
+        "description": "سعة الحافلة (عدد المقاعد)"
+      },
+      {
+        "name": "layout_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف تخطيط المقاعد المستخدم لهذه الحافلة"
+      }
+    ]
+  },
+  {
+    "tool_name": "get_partner_buses",
+    "description": "تستخدم هذه الأداة لعرض قائمة بجميع الحافلات التابعة للشريك المعتمد. تدعم الترحيل (pagination).",
+    "endpoint": "/partners/me/buses/",
+    "method": "GET",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "skip",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد تخطيها",
+        "default": 0
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد جلبها",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "tool_name": "create_partner_schedule",
+    "description": "تستخدم هذه الأداة لإنشاء قالب رحلة متكررة (جدول زمني) للشريك المعتمد. يتضمن اسم الجدول، المسار، وقت المغادرة، المدة، والقواعد المتكررة.",
+    "endpoint": "/partners/me/schedules/",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "schedule_name",
+        "type": "string",
+        "required": true,
+        "description": "اسم الجدول الزمني"
+      },
+      {
+        "name": "route_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف المسار"
+      },
+      {
+        "name": "departure_time",
+        "type": "string",
+        "required": true,
+        "description": "وقت المغادرة (HH:MM:SS)"
+      },
+      {
+        "name": "duration_minutes",
+        "type": "integer",
+        "required": true,
+        "description": "مدة الرحلة بالدقائق"
+      },
+      {
+        "name": "bus_class_required",
+        "type": "integer",
+        "required": true,
+        "description": "فئة الحافلة المطلوبة"
+      },
+      {
+        "name": "recurrence_rules",
+        "type": "array",
+        "required": true,
+        "description": "قائمة بقواعد التكرار (أيام الأسبوع، التواريخ، إلخ)"
+      }
+    ]
+  },
+  {
+    "tool_name": "upload_partner_document",
+    "description": "تستخدم هذه الأداة لرفع مستند مطلوب للشريك. يجب إرسال الملف ومعرف نوع المستند كـ form-data.",
+    "endpoint": "/partners/me/documents",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "document_type_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف نوع المستند (يمكن الحصول عليه من /partners/document-types)"
+      },
+      {
+        "name": "file",
+        "type": "file",
+        "required": true,
+        "description": "الملف المراد رفعه"
+      }
+    ]
+  },
+  {
+    "tool_name": "add_partner_driver",
+    "description": "تستخدم هذه الأداة لإنشاء حساب سائق جديد وربطه بالشريك المعتمد. يتطلب معلومات المستخدم ومعلومات السائق مثل رقم الرخصة وتاريخ انتهائها.",
+    "endpoint": "/drivers/",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "user",
+        "type": "object",
+        "required": true,
+        "description": "معلومات حساب المستخدم (email, password, full_name, phone_number)"
+      },
+      {
+        "name": "license_number",
+        "type": "string",
+        "required": true,
+        "description": "رقم رخصة القيادة"
+      },
+      {
+        "name": "license_expiry_date",
+        "type": "string",
+        "required": true,
+        "description": "تاريخ انتهاء الرخصة (YYYY-MM-DD)"
+      }
+    ]
+  },
+  {
+    "tool_name": "create_driver_profile_for_self",
+    "description": "تستخدم هذه الأداة عندما يكون الشريك نفسه سائقاً (سائق حر). ينشئ ملف سائق للشريك الحالي دون إنشاء حساب مستخدم جديد.",
+    "endpoint": "/drivers/me",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "license_number",
+        "type": "string",
+        "required": true,
+        "description": "رقم رخصة القيادة"
+      },
+      {
+        "name": "license_expiry_date",
+        "type": "string",
+        "required": true,
+        "description": "تاريخ انتهاء الرخصة (YYYY-MM-DD)"
+      }
+    ]
+  },
+  {
+    "tool_name": "get_partner_drivers",
+    "description": "تستخدم هذه الأداة لعرض قائمة بجميع السائقين التابعين للشريك المعتمد. تدعم الترحيل.",
+    "endpoint": "/drivers/",
+    "method": "GET",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "skip",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد تخطيها",
+        "default": 0
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد جلبها",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "tool_name": "update_partner_driver",
+    "description": "تستخدم هذه الأداة لتحديث بيانات سائق تابع للشريك المعتمد. يتم التحقق من الملكية والرحلات المستقبلية.",
+    "endpoint": "/drivers/{driver_id}",
+    "method": "PUT",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "driver_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف السائق المراد تحديثه"
+      },
+      {
+        "name": "license_number",
+        "type": "string",
+        "required": false,
+        "description": "رقم رخصة القيادة الجديد"
+      },
+      {
+        "name": "license_expiry_date",
+        "type": "string",
+        "required": false,
+        "description": "تاريخ انتهاء الرخصة الجديد (YYYY-MM-DD)"
+      }
+    ]
+  },
+  {
+    "tool_name": "delete_partner_driver",
+    "description": "تستخدم هذه الأداة لإلغاء تنشيط (حذف ناعم) سائق. يتم رفض العملية إذا كان السائق مجدولاً لرحلات مستقبلية.",
+    "endpoint": "/drivers/{driver_id}",
+    "method": "DELETE",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "driver_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف السائق المراد حذفه"
+      }
+    ]
+  },
+  {
+    "tool_name": "create_trip",
+    "description": "تستخدم هذه الأداة لإنشاء رحلة جديدة. تتطلب صلاحية 'trip:create'. يجب تحديد الحافلة، المسار، السائقين، الأوقات، والأسعار.",
+    "endpoint": "/trips/",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "bus_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف الحافلة"
+      },
+      {
+        "name": "route_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف المسار"
+      },
+      {
+        "name": "departure_time",
+        "type": "string",
+        "required": true,
+        "description": "وقت المغادرة (YYYY-MM-DD HH:MM:SS)"
+      },
+      {
+        "name": "arrival_time",
+        "type": "string",
+        "required": true,
+        "description": "وقت الوصول (YYYY-MM-DD HH:MM:SS)"
+      },
+      {
+        "name": "driver_ids",
+        "type": "array",
+        "required": true,
+        "description": "قائمة بمعرفات السائقين المعينين للرحلة"
+      },
+      {
+        "name": "fares",
+        "type": "array",
+        "required": true,
+        "description": "قائمة بالأسعار لكل فئة مقعد (class_id, price)"
+      }
+    ]
+  },
+  {
+    "tool_name": "get_multiple_trips",
+    "description": "تستخدم هذه الأداة لجلب قائمة بالرحلات مع فلاتر. للمشرفين: يمكن الفلترة حسب أي شريك. للشركاء: يتم عرض رحلاتهم فقط. تدعم الترحيل والترتيب.",
+    "endpoint": "/trips/",
+    "method": "GET",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "partner_id",
+        "type": "integer",
+        "required": false,
+        "description": "الفلترة حسب معرف الشريك (للمشرفين فقط)"
+      },
+      {
+        "name": "status_id",
+        "type": "integer",
+        "required": false,
+        "description": "الفلترة حسب حالة الرحلة"
+      },
+      {
+        "name": "page",
+        "type": "integer",
+        "required": false,
+        "description": "رقم الصفحة",
+        "default": 1
+      },
+      {
+        "name": "per_page",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر لكل صفحة",
+        "default": 20
+      },
+      {
+        "name": "sort_by",
+        "type": "string",
+        "required": false,
+        "description": "الحقل المراد الترتيب حسبه",
+        "default": "departure_time"
+      },
+      {
+        "name": "sort_order",
+        "type": "string",
+        "required": false,
+        "description": "اتجاه الترتيب: 'asc' أو 'desc'",
+        "default": "desc"
+      }
+    ]
+  },
+  {
+    "tool_name": "create_saved_passenger",
+    "description": "تستخدم هذه الأداة لإضافة مسافر جديد إلى دفتر المستخدم المحفوظ. يسهل الحجز السريع في المستقبل.",
+    "endpoint": "/saved-passengers/",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "passenger_name",
+        "type": "string",
+        "required": true,
+        "description": "الاسم الكامل للمسافر"
+      },
+      {
+        "name": "date_of_birth",
+        "type": "string",
+        "required": true,
+        "description": "تاريخ الميلاد (YYYY-MM-DD)"
+      },
+      {
+        "name": "gender_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف الجنس"
+      },
+      {
+        "name": "nationality_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف الجنسية"
+      },
+      {
+        "name": "document_type_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف نوع الوثيقة"
+      },
+      {
+        "name": "passenger_document_number",
+        "type": "string",
+        "required": true,
+        "description": "رقم الوثيقة"
+      },
+      {
+        "name": "relationship_id",
+        "type": "integer",
+        "required": false,
+        "description": "معرف العلاقة بالمستخدم (اختياري)"
+      }
+    ]
+  },
+  {
+    "tool_name": "get_saved_passengers",
+    "description": "تستخدم هذه الأداة لعرض قائمة بجميع المسافرين المحفوظين للمستخدم الحالي.",
+    "endpoint": "/saved-passengers/",
+    "method": "GET",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "skip",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد تخطيها",
+        "default": 0
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد جلبها",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "tool_name": "get_saved_passenger",
+    "description": "تستخدم هذه الأداة للحصول على تفاصيل مسافر محفوظ معين. يتم التحقق من أن المسافر يخص المستخدم الحالي.",
+    "endpoint": "/saved-passengers/{passenger_id}",
+    "method": "GET",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "passenger_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف المسافر المحفوظ"
+      }
+    ]
+  },
+  {
+    "tool_name": "update_saved_passenger",
+    "description": "تستخدم هذه الأداة لتحديث بيانات مسافر محفوظ. يسمح بالتحديث الجزئي (يمكن إرسال حقل واحد فقط).",
+    "endpoint": "/saved-passengers/{passenger_id}",
+    "method": "PUT",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "passenger_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف المسافر المحفوظ"
+      },
+      {
+        "name": "passenger_name",
+        "type": "string",
+        "required": false,
+        "description": "الاسم الكامل الجديد"
+      },
+      {
+        "name": "date_of_birth",
+        "type": "string",
+        "required": false,
+        "description": "تاريخ الميلاد الجديد (YYYY-MM-DD)"
+      },
+      {
+        "name": "passenger_document_number",
+        "type": "string",
+        "required": false,
+        "description": "رقم الوثيقة الجديد"
+      }
+    ]
+  },
+  {
+    "tool_name": "delete_saved_passenger",
+    "description": "تستخدم هذه الأداة لحذف مسافر محفوظ من دفتر المستخدم.",
+    "endpoint": "/saved-passengers/{passenger_id}",
+    "method": "DELETE",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "passenger_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف المسافر المحفوظ المراد حذفه"
+      }
+    ]
+  },
+  {
+    "tool_name": "create_partner_layout",
+    "description": "تستخدم هذه الأداة لإنشاء تخطيط حافلة جديد (قالب) مع جميع مقاعده. يحدد ترتيب المقاعد وفئاتها.",
+    "endpoint": "/layouts/",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "اسم وصفي للتخطيط (مثل: 'حافلة 50 مقعد VIP')"
+      },
+      {
+        "name": "seats",
+        "type": "array",
+        "required": true,
+        "description": "قائمة كاملة بجميع المقاعد في التخطيط",
+        "items": [
+          {
+            "name": "seat_number",
+            "type": "string",
+            "required": true,
+            "description": "رقم المقعد (مثل: 'A1')"
+          },
+          {
+            "name": "class_id",
+            "type": "integer",
+            "required": true,
+            "description": "معرف فئة المقعد"
+          },
+          {
+            "name": "deck",
+            "type": "integer",
+            "required": true,
+            "description": "رقم الطابق"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "tool_name": "get_partner_layouts",
+    "description": "تستخدم هذه الأداة لعرض قائمة بجميع تخطيطات الحافلات التي أنشأها الشريك المعتمد.",
+    "endpoint": "/layouts/",
+    "method": "GET",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "skip",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد تخطيها",
+        "default": 0
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد جلبها",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "tool_name": "get_single_partner_layout",
+    "description": "تستخدم هذه الأداة لعرض تفاصيل تخطيط حافلة واحد محدد مع جميع مقاعده.",
+    "endpoint": "/layouts/{layout_id}",
+    "method": "GET",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "layout_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف التخطيط المراد عرضه"
+      }
+    ]
+  },
+  {
+    "tool_name": "create_cancellation_policy",
+    "description": "تستخدم هذه الأداة لإنشاء سياسة إلغاء جديدة مع مجموعة من القواعد. تحدد نسبة الاسترداد حسب الوقت المتبقي قبل المغادرة.",
+    "endpoint": "/policies/",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "policy_name",
+        "type": "string",
+        "required": true,
+        "description": "اسم السياسة"
+      },
+      {
+        "name": "rules",
+        "type": "array",
+        "required": true,
+        "description": "قائمة بقواعد الإلغاء",
+        "items": [
+          {
+            "name": "hours_before_departure",
+            "type": "integer",
+            "required": true,
+            "description": "عدد الساعات قبل المغادرة"
+          },
+          {
+            "name": "refund_percentage",
+            "type": "number",
+            "required": true,
+            "description": "نسبة الاسترداد (0-100)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "tool_name": "get_my_cancellation_policies",
+    "description": "تستخدم هذه الأداة لعرض جميع سياسات الإلغاء التي قام الشريك المعتمد بإنشائها.",
+    "endpoint": "/policies/",
+    "method": "GET",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "skip",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد تخطيها",
+        "default": 0
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد جلبها",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "tool_name": "upload_passenger_document",
+    "description": "تستخدم هذه الأداة لرفع صورة وثيقة (مثل جواز السفر) وربطها بمقعد محجوز معين في حجز قائم.",
+    "endpoint": "/bookings/seats/{booking_seat_id}/document",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "booking_seat_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف المقعد المحجوز"
+      },
+      {
+        "name": "file",
+        "type": "file",
+        "required": true,
+        "description": "صورة الوثيقة المراد رفعها"
+      }
+    ]
+  },
+  {
+    "tool_name": "list_partners_admin",
+    "description": "تستخدم هذه الأداة من قبل المشرف لعرض قائمة بجميع الشركاء في النظام. تتطلب صلاحيات إدارية.",
+    "endpoint": "/admin/partners",
+    "method": "GET",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "skip",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد تخطيها",
+        "default": 0
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد جلبها",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "tool_name": "update_partner_status_admin",
+    "description": "تستخدم هذه الأداة من قبل المشرف لتحديث حالة طلب الشراكة (موافقة/رفض). تتطلب صلاحيات إدارية.",
+    "endpoint": "/admin/partners/{partner_id}/status",
+    "method": "PUT",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "partner_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف الشريك"
+      },
+      {
+        "name": "new_status_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف الحالة الجديدة"
+      }
+    ]
+  },
+  {
+    "tool_name": "create_route_admin",
+    "description": "تستخدم هذه الأداة من قبل المشرف لإنشاء مسار جديد في النظام. يحدد مدينة المغادرة والوصول.",
+    "endpoint": "/admin/routes/",
+    "method": "POST",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "from_city_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف مدينة المغادرة"
+      },
+      {
+        "name": "to_city_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف مدينة الوصول"
+      }
+    ]
+  },
+  {
+    "tool_name": "list_routes_admin",
+    "description": "تستخدم هذه الأداة من قبل المشرف لعرض قائمة بجميع المسارات في النظام.",
+    "endpoint": "/admin/routes/",
+    "method": "GET",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "skip",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد تخطيها",
+        "default": 0
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "required": false,
+        "description": "عدد العناصر المراد جلبها",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "tool_name": "get_partner_documents_admin",
+    "description": "تستخدم هذه الأداة من قبل المشرف لعرض جميع المستندات الخاصة بشريك معين لمراجعتها.",
+    "endpoint": "/admin/partners/{partner_id}/documents",
+    "method": "GET",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "partner_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف الشريك"
+      }
+    ]
+  },
+  {
+    "tool_name": "review_partner_document_admin",
+    "description": "تستخدم هذه الأداة من قبل المشرف لمراجعة مستند شريك (موافقة أو رفض) مع إمكانية إضافة تعليقات.",
+    "endpoint": "/admin/documents/{document_id}/review",
+    "method": "PUT",
+    "requires_auth": true,
+    "parameters": [
+      {
+        "name": "document_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف المستند"
+      },
+      {
+        "name": "status_id",
+        "type": "integer",
+        "required": true,
+        "description": "معرف الحالة الجديدة (موافق/مرفوض)"
+      },
+      {
+        "name": "comments",
+        "type": "string",
+        "required": false,
+        "description": "تعليقات المشرف على المستند"
+      }
+    ]
+  }
 ]

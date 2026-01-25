@@ -1734,3 +1734,47 @@ httpx.ReadTimeout
 2026-01-21 02:00:34,730 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 02:05:34 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `meta-llama/llama-4-maverick-17
 2026-01-21 02:00:40,647 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 02:05:40 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organizatio
 2026-01-21 02:00:46,336 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 02:05:46 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 01:44:24,581 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 01:49:24 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-120b` in organi
+2026-01-26 01:44:27,751 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 01:49:27 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organiz
+2026-01-26 01:44:31,429 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 01:49:31 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-safeguard-20b` 
+2026-01-26 01:44:33,787 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 01:49:33 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `meta-llama/llama-4-maverick-17
+2026-01-26 01:44:36,551 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 01:49:36 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organizatio
+2026-01-26 01:44:39,109 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 01:49:39 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 01:44:46,689 - ModelRegistry - WARNING - All models are blacklisted! Resetting fallback.
+2026-01-26 01:44:49,853 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 01:49:49 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 01:44:53,791 - ModelRegistry - WARNING - All models are blacklisted! Resetting fallback.
+2026-01-26 01:44:56,708 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 01:49:56 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 01:46:02,323 - ModelRegistry - WARNING - All models are blacklisted! Resetting fallback.
+2026-01-26 01:46:07,192 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 01:51:07 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 01:46:31,211 - ModelRegistry - WARNING - All models are blacklisted! Resetting fallback.
+2026-01-26 01:46:34,114 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 01:51:34 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 01:49:24,158 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 01:54:24 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-120b` in organi
+2026-01-26 01:49:27,329 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 01:54:27 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organiz
+2026-01-26 01:49:29,802 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 01:54:29 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-safeguard-20b` 
+2026-01-26 01:49:32,269 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 01:54:32 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `meta-llama/llama-4-maverick-17
+2026-01-26 01:49:34,926 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 01:54:34 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organizatio
+2026-01-26 01:49:37,591 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 01:54:37 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 01:50:09,350 - ModelRegistry - WARNING - All models are blacklisted! Resetting fallback.
+2026-01-26 01:50:11,790 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 01:55:11 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 01:53:58,590 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 01:58:58 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-120b` in organi
+2026-01-26 01:54:01,549 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 01:59:01 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organiz
+2026-01-26 01:54:04,520 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 01:59:04 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-safeguard-20b` 
+2026-01-26 01:54:06,715 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 01:59:06 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `meta-llama/llama-4-maverick-17
+2026-01-26 01:54:10,150 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 01:59:10 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organizatio
+2026-01-26 01:54:12,518 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 01:59:12 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 02:04:45,328 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 02:09:45 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-120b` in organi
+2026-01-26 02:04:48,808 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 02:09:48 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organiz
+2026-01-26 02:04:51,576 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 02:09:51 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-safeguard-20b` 
+2026-01-26 02:04:55,158 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 02:09:55 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `meta-llama/llama-4-maverick-17
+2026-01-26 02:05:03,348 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 02:10:03 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organizatio
+2026-01-26 02:05:06,227 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 02:10:06 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 02:13:14,053 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 02:18:14 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-120b` in organi
+2026-01-26 02:13:18,248 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 02:18:18 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organiz
+2026-01-26 02:13:21,745 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-safeguard-20b until 02:18:21 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-safeguard-20b` 
+2026-01-26 02:13:25,877 - ModelRegistry - WARNING - BLACKLIST: meta-llama/llama-4-maverick-17b-128e-instruct until 02:18:25 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `meta-llama/llama-4-maverick-17
+2026-01-26 02:13:30,914 - ModelRegistry - WARNING - BLACKLIST: qwen/qwen3-32b until 02:18:30 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `qwen/qwen3-32b` in organizatio
+2026-01-26 02:13:34,827 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 02:18:34 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 02:13:41,427 - ModelRegistry - WARNING - All models are blacklisted! Resetting fallback.
+2026-01-26 02:13:45,992 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 02:18:45 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
+2026-01-26 02:14:02,928 - ModelRegistry - WARNING - All models are blacklisted! Resetting fallback.
+2026-01-26 02:14:05,976 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-8b-instant until 02:19:05 | Reason: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.1-8b-instant` in organ
