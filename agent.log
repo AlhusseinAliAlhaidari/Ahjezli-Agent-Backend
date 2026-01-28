@@ -1933,3 +1933,8 @@ httpx.ReadTimeout
 2026-01-28 07:38:25,200 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 07:43:25 | Reason: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organi
 2026-01-28 07:39:04,118 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-70b-versatile until 07:40:04 | Reason: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned
 2026-01-28 07:40:51,542 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-70b-versatile until 07:41:51 | Reason: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned
+2026-01-28 07:47:37,857 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 07:52:37 | Reason: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organ
+2026-01-28 07:47:40,725 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-70b-versatile until 07:48:40 | Reason: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned
+2026-01-28 07:56:51,367 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-120b until 08:01:51 | Reason: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organ
+2026-01-28 07:56:54,140 - ModelRegistry - WARNING - BLACKLIST: llama-3.1-70b-versatile until 07:57:54 | Reason: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned
+2026-01-28 07:56:57,135 - ModelRegistry - WARNING - BLACKLIST: openai/gpt-oss-20b until 08:01:57 | Reason: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organi
