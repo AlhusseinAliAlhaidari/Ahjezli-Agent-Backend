@@ -70,15 +70,21 @@ import asyncio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware # استيراد المكتبة المطلوبة
 from app.agents.orchestrator import OrchestratorAgent
-from app.tools.tool_factory import ToolFactory
+# from app.tools.tool_factory import ToolFactory
 
 app = FastAPI()
+#! =========================== تم الاستبدال هذا الجزء بالمنطق الجديد للأداة ===========================
 # توليد الأدوات ديناميكياً
-dynamic_tools = ToolFactory.create_tools()
+# dynamic_tools = ToolFactory.create_tools()
 # تمرير الأدوات للوكيل عند الإنشاء
-orchestrator = OrchestratorAgent(tools=dynamic_tools)
-from app.core.config import settings
+# orchestrator = OrchestratorAgent(tools=dynamic_tools)
+#!=======================================================================================================
 
+from app.core.config import settings
+# === التغيير الأساسي هنا ===
+# نستورد المصنع من الملف الجديد (tools/registry.py) بدلاً من القديم
+from app.core.tools.registry import ToolRegistry
+from app.api.routes import telegram
 app = FastAPI(title=settings.PROJECT_NAME, version=settings.VERSION)
 
 
@@ -90,6 +96,20 @@ app.add_middleware(
     allow_methods=["*"],  # يسمح بجميع الطرق (POST, GET, OPTIONS, etc.)
     allow_headers=["*"],  # يسمح بجميع العناوين (Headers)
 )
+
+# =========================================================
+# 🏗️ تهيئة النظام
+# =========================================================
+
+# 1. جلب الأدوات من السجل المركزي (Core Registry)
+# السجل هو المسؤول عن معرفة مكان الأدوات وكيفية إنشائها
+agent_tools = ToolRegistry.get_all_tools()
+
+# 2. تشغيل الوكيل مع الأدوات الجاهزة
+orchestrator = OrchestratorAgent(tools=agent_tools)
+# 3. تسجيل راوتر تيليجرام
+app.include_router(telegram.router)
+
 
 # نموذج طلب المستخدم
 class QueryRequest(BaseModel):

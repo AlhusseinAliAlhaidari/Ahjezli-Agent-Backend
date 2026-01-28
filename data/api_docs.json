@@ -226,29 +226,24 @@
   },
   {
     "tool_name": "create_partner_request",
-    "description": "تستخدم هذه الأداة لإنشاء طلب شراكة جديد. يجب أن يكون المستخدم مسجلاً للدخول. يتطلب معلومات الشركة مثل الاسم التجاري، رقم السجل التجاري، وتفاصيل الاتصال.",
+    "description": "تستخدم هذه الأداة لإنشاء طلب شراكة جديد. يجب أن يكون المستخدم مسجلاً للدخول. يتطلب معلومات الشركة مثل الاسم التجاري، العنوان الكامل  وتفاصيل الاتصال.",
     "endpoint": "/partners/",
     "method": "POST",
     "requires_auth": true,
     "parameters": [
       {
-        "name": "business_name",
+        "name": "company_name",
         "type": "string",
         "required": true,
         "description": "الاسم التجاري للشركة"
       },
       {
-        "name": "commercial_registration_number",
+        "name": "address",
         "type": "string",
         "required": true,
-        "description": "رقم السجل التجاري"
+        "description": "العنوان الكامل للشركة"
       },
-      {
-        "name": "contact_email",
-        "type": "string",
-        "required": true,
-        "description": "البريد الإلكتروني للتواصل"
-      },
+
       {
         "name": "contact_phone",
         "type": "string",
@@ -360,7 +355,7 @@
   },
   {
     "tool_name": "upload_partner_document",
-    "description": "تستخدم هذه الأداة لرفع مستند مطلوب للشريك. يجب إرسال الملف ومعرف نوع المستند كـ form-data.",
+    "description": "تستخدم هذه الأداة لرفع مستند مطلوب للشريك. يجب إرسال الملف ومعرف نوع المستند كـ form-data. يجب أن يكون المستخدم قد سجل بيانات طلب الانضمام كشريك مسبقاً.",
     "endpoint": "/partners/me/documents",
     "method": "POST",
     "requires_auth": true,
@@ -382,34 +377,64 @@
   {
     "tool_name": "add_partner_driver",
     "description": "تستخدم هذه الأداة لإنشاء حساب سائق جديد وربطه بالشريك المعتمد. يتطلب معلومات المستخدم ومعلومات السائق مثل رقم الرخصة وتاريخ انتهائها.",
-    "endpoint": "/drivers/",
+    "endpoint": "partners/me/drivers/",
     "method": "POST",
     "requires_auth": true,
-    "parameters": [
-      {
-        "name": "user",
-        "type": "object",
-        "required": true,
-        "description": "معلومات حساب المستخدم (email, password, full_name, phone_number)"
-      },
-      {
-        "name": "license_number",
-        "type": "string",
-        "required": true,
-        "description": "رقم رخصة القيادة"
-      },
-      {
-        "name": "license_expiry_date",
-        "type": "string",
-        "required": true,
-        "description": "تاريخ انتهاء الرخصة (YYYY-MM-DD)"
-      }
-    ]
+"parameters": [
+  {
+    "name": "full_name",
+    "type": "string",
+    "required": true,
+    "description": "الاسم الرباعي أو الكامل للمستخدم"
+  },
+  {
+    "name": "email",
+    "type": "string",
+    "required": true,
+    "description": "البريد الإلكتروني (مثال: user@example.com)"
+  },
+  {
+    "name": "phone_number",
+    "type": "string",
+    "required": true,
+    "description": "رقم الهاتف مع مفتاح الدولة"
+  },
+  {
+    "name": "password",
+    "type": "string",
+    "required": true,
+    "description": "كلمة المرور الخاصة بالحساب"
+  },
+  {
+    "name": "nationality_id",
+    "type": "integer",
+    "required": true,
+    "description": "رقم المعرف الخاص بالجنسية (ID)"
+  },
+  {
+    "name": "gender_id",
+    "type": "integer",
+    "required": true,
+    "description": "رقم المعرف الخاص بالجنس (مثال: 1 للذكر، 2 للأنثى)"
+  },
+  {
+    "name": "license_number",
+    "type": "string",
+    "required": true,
+    "description": "رقم رخصة القيادة"
+  },
+  {
+    "name": "license_expiry_date",
+    "type": "string",
+    "required": true,
+    "description": "تاريخ انتهاء الرخصة (بالصيغة: YYYY-MM-DD)"
+  }
+]
   },
   {
     "tool_name": "create_driver_profile_for_self",
     "description": "تستخدم هذه الأداة عندما يكون الشريك نفسه سائقاً (سائق حر). ينشئ ملف سائق للشريك الحالي دون إنشاء حساب مستخدم جديد.",
-    "endpoint": "/drivers/me",
+    "endpoint": "partners/me/drivers/me",
     "method": "POST",
     "requires_auth": true,
     "parameters": [
@@ -430,7 +455,7 @@
   {
     "tool_name": "get_partner_drivers",
     "description": "تستخدم هذه الأداة لعرض قائمة بجميع السائقين التابعين للشريك المعتمد. تدعم الترحيل.",
-    "endpoint": "/drivers/",
+    "endpoint": "partners/me/drivers/",
     "method": "GET",
     "requires_auth": true,
     "parameters": [
@@ -453,7 +478,7 @@
   {
     "tool_name": "update_partner_driver",
     "description": "تستخدم هذه الأداة لتحديث بيانات سائق تابع للشريك المعتمد. يتم التحقق من الملكية والرحلات المستقبلية.",
-    "endpoint": "/drivers/{driver_id}",
+    "endpoint": "partners/me/drivers/{driver_id}",
     "method": "PUT",
     "requires_auth": true,
     "parameters": [
@@ -480,7 +505,7 @@
   {
     "tool_name": "delete_partner_driver",
     "description": "تستخدم هذه الأداة لإلغاء تنشيط (حذف ناعم) سائق. يتم رفض العملية إذا كان السائق مجدولاً لرحلات مستقبلية.",
-    "endpoint": "/drivers/{driver_id}",
+    "endpoint": "partners/me/drivers/{driver_id}",
     "method": "DELETE",
     "requires_auth": true,
     "parameters": [
@@ -539,7 +564,7 @@
   },
   {
     "tool_name": "get_multiple_trips",
-    "description": "تستخدم هذه الأداة لجلب قائمة بالرحلات مع فلاتر. للمشرفين: يمكن الفلترة حسب أي شريك. للشركاء: يتم عرض رحلاتهم فقط. تدعم الترحيل والترتيب.",
+    "description": " partner_id الفلترة حسب معرف الشريك (للمشرفين فقط) . تستخدم هذه الأداة لجلب قائمة بالرحلات مع فلاتر. للمشرفين: يمكن الفلترة حسب أي شريك. للشركاء: يتم عرض رحلاتهم فقط. تدعم الترحيل والترتيب. ",
     "endpoint": "/trips/",
     "method": "GET",
     "requires_auth": true,
@@ -547,12 +572,14 @@
       {
         "name": "partner_id",
         "type": "integer",
+        "default": -1,
         "required": false,
         "description": "الفلترة حسب معرف الشريك (للمشرفين فقط)"
       },
       {
         "name": "status_id",
         "type": "integer",
+        "default": -1,
         "required": false,
         "description": "الفلترة حسب حالة الرحلة"
       },

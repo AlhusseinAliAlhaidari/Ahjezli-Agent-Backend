@@ -72,7 +72,7 @@ class ModelRegistry:
     def __init__(self):
         self.primary_models = [
             "openai/gpt-oss-120b",
-            # "llama-3.1-70b-versatile", # بديل قوي لـ 70b المتوقف
+            "llama-3.1-70b-versatile", # بديل قوي لـ 70b المتوقف
             # "mixtral-8x22b-instruct-v0.1",
             "openai/gpt-oss-20b",
             "openai/gpt-oss-safeguard-20b",

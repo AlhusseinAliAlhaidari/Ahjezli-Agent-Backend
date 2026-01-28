@@ -836,10 +836,152 @@
 #                 yield {"type": "status", "payload": f"Model {model_name} failed: {e}"}
 
 
-#!!============
+# #!!============
+# import logging
+# import json
+# from typing import AsyncGenerator, Dict, List, Optional
+
+# from langchain_groq import ChatGroq
+# from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, BaseMessage
+# from langgraph.prebuilt import create_react_agent
+
+# from app.core.config import settings
+# from app.core.registry import ModelRegistry
+# from app.core.execution_context import current_execution_context
+
+# # 1. استيراد محركات الذاكرة (السياقية + التفضيلات)
+# from app.core.memory import memory_engine  # (RAG Memory)
+# from app.core.memory.user_profile_db import UserProfileManager  # <--- (NEW) الذاكرة طويلة المدى
+
+# logger = logging.getLogger("OrchestratorAgent")
+
+# class OrchestratorAgent:
+#     def __init__(self, tools: List):
+#         self.tools = tools
+#         self.registry = ModelRegistry()
+        
+#         # 2. تهيئة مدير ملفات المستخدمين
+#         self.profile_db = UserProfileManager()  # <--- (NEW)
+        
+#         profile_content = settings.profile
+        
+#         # System Prompt الأساسي
+#         self.base_system_prompt = f"""
+# You are the official assistant of the platform.
+# Rules:
+# - Use tools only when needed.
+# - Never invent data.
+# - Only rely on tool outputs or the provided CONTEXT below.
+# - If information is missing, ask the user clearly.
+# Platform profile:
+# {profile_content}
+# """.strip()
+    
+#     async def process_request(self, user_input: str, session_id: str, access_token: Optional[str] = None) -> AsyncGenerator[Dict, None]:
+#         # تحديد مفتاح المستخدم الموحد
+#         user_key = session_id if session_id else f"access_token:{access_token}"
+        
+#         current_execution_context.set({
+#             "session_id": session_id,
+#             "access_token": access_token,
+#             "user_id": user_key
+#         })
+
+#         # ============================================================
+#         # خطوة 1: جلب التفضيلات من الذاكرة طويلة المدى (UserProfileDB)
+#         # ============================================================
+#         # <--- (NEW BLOCK)
+#         user_profile = self.profile_db.get_profile(user_key)
+#         preferences = user_profile.get("preferences", {})
+        
+#         # تنسيق التفضيلات كنص ليقرأه النموذج
+#         preferences_context = ""
+#         if preferences:
+#             preferences_list = [f"- {k}: {v}" for k, v in preferences.items()]
+#             preferences_context = "\n".join(preferences_list)
+#         # ============================================================
+
+#         # خطوة 2: بناء سياق المحادثة القديم (RAG Memory)
+#         memory_context = memory_engine.build_context(user_key, user_input)
+
+#         # خطوة 3: دمج كل شيء في الـ System Prompt
+#         enriched_system_prompt = self.base_system_prompt
+        
+#         # أ. إضافة تفضيلات المستخدم (الأهمية القصوى)
+#         if preferences_context:
+#              # <--- (NEW) إخبار النموذج بمعلومات المستخدم
+#             enriched_system_prompt += f"\n\n### KNOWN USER PREFERENCES (Do not ask about these again):\n{preferences_context}"
+        
+#         # ب. إضافة ملخص المحادثة
+#         if memory_context.get("summary"):
+#             enriched_system_prompt += f"\n\n### CONVERSATION SUMMARY:\n{memory_context['summary']}"
+        
+#         # ج. إضافة الذكريات السياقية
+#         if memory_context.get("relevant_memories"):
+#             memories_text = "\n".join([json.dumps(m, ensure_ascii=False) for m in memory_context['relevant_memories']])
+#             enriched_system_prompt += f"\n\n### RELEVANT HISTORY:\n{memories_text}"
+
+#         # بناء قائمة الرسائل
+#         messages: List[BaseMessage] = [SystemMessage(content=enriched_system_prompt)]
+
+#         # إضافة آخر الرسائل (Recent History)
+#         for text in memory_context.get("recent_messages", []):
+#             messages.append(HumanMessage(content=f"[History]: {text}"))
+
+#         messages.append(HumanMessage(content=user_input))
+
+#         # حفظ سؤال المستخدم في الذاكرة السياقية
+#         memory_engine.ingest_text(user_key, f"User: {user_input}")
+
+#         inputs = {"messages": messages}
+
+#         # تشغيل النموذج (Loop through models)
+#         for model_name in self.registry.get_available_models():
+#             try:
+#                 llm = ChatGroq(model_name=model_name, api_key=settings.GROQ_API_KEY, temperature=0)
+#                 agent = create_react_agent(llm, self.tools)
+                
+#                 final_response = ""
+
+#                 async for event in agent.astream(inputs, config={"recursion_limit": 15}, stream_mode="values"):
+#                     if not event.get("messages"): continue
+#                     last_message = event["messages"][-1]
+
+#                     if hasattr(last_message, "tool_calls") and last_message.tool_calls:
+#                         for call in last_message.tool_calls:
+#                             yield {"type": "status", "payload": f"Using tool: {call.get('name')}"}
+
+#                     elif isinstance(last_message, AIMessage):
+#                         if last_message.content:
+#                             final_response = last_message.content
+#                             yield {"type": "final", "payload": final_response}
+                
+#                 # حفظ الرد النهائي
+#                 if final_response:
+#                     memory_engine.ingest_text(user_key, f"AI: {final_response}")
+                
+#                 return
+
+#             except Exception as e:
+#                 logger.error(f"Model {model_name} failed: {e}")
+#                 self.registry.report_failure(model_name, str(e))
+#                 yield {"type": "status", "payload": f"Error with {model_name}, switching..."}
+
+
+
+
+
+
+
+
+
+
+
+#!!!!=========
+
 import logging
 import json
-from typing import AsyncGenerator, Dict, List, Optional
+from typing import AsyncGenerator, Dict, List, Optional, Any
 
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, BaseMessage
@@ -848,98 +990,173 @@ from langgraph.prebuilt import create_react_agent
 from app.core.config import settings
 from app.core.registry import ModelRegistry
 from app.core.execution_context import current_execution_context
-# استدعاء محرك الذاكرة من الكود المرفق الأول
-from app.core.memory import memory_engine 
 
+# استيراد أنظمة الذاكرة (القصيرة والطويلة)
+from app.core.memory import memory_engine  # (RAG - الذاكرة السياقية)
+from app.core.memory.user_profile_db import UserProfileManager  # (Profile DB - ذاكرة التفضيلات)
+
+# إعداد المسجل (Logger) لمتابعة الأخطاء والأحداث
 logger = logging.getLogger("OrchestratorAgent")
 
 class OrchestratorAgent:
-    def __init__(self, tools: List):
-        self.tools = tools
-        self.registry = ModelRegistry()
-        
-        profile_content = settings.profile
-        docs_info = settings.api_docs
-        
-        # System Prompt يوجه النموذج للاعتماد على السياق
-        self.base_system_prompt = f"""
-You are the official assistant of the platform.
-Rules:
-- Use tools only when needed.
-- Never invent data.
-- Only rely on tool outputs or the provided CONTEXT below.
-- If information is missing, ask the user clearly.
-
-Platform profile:
-{profile_content}
-
-""".strip()
+    """
+    العميل المنسق (Orchestrator): هو العقل المدبر للنظام.
+    مسؤوليته: جمع الأدوات، استحضار الذاكرة، اختيار النموذج المناسب، وإدارة الحوار.
+    """
     
-    async def process_request(self, user_input: str, session_id: str, access_token: Optional[str] = None) -> AsyncGenerator[Dict, None]:
-        # تحديد مفتاح المستخدم
-        user_key = access_token if access_token else f"session:{session_id}"
+    def __init__(self, tools: List[Any]):
+        """
+        تهيئة المنسق.
+        :param tools: قائمة الأدوات التي يُسمح للنموذج باستخدامها.
+        """
+        self.tools = tools
+        self.registry = ModelRegistry()  # سجل النماذج (للتبديل عند الفشل)
+        self.profile_db = UserProfileManager()  # مدير ذاكرة التفضيلات
         
+        # التوجيه الأساسي (System Prompt): القواعد الثابتة التي لا تتغير
+        # نكتبها بالإنجليزية لأن النماذج تفهم التعليمات الهيكلية بالإنجليزية بدقة أعلى
+        self.base_system_prompt = f"""
+You are the official AI assistant of the platform.
+
+### CORE OPERATING RULES:
+1. **MEMORY & PERSONALIZATION**:
+   - If the user mentions a personal preference (e.g., "I prefer window seats", "I pay cash"), use the 'save_user_preference' tool IMMEDIATELY.
+   - Do NOT ask for permission to save preferences. Act proactively.
+   
+2. **TOOL USAGE**:
+   - Use tools ONLY when necessary. Do not guess information.
+   - If inputs are missing, ask the user for clarification.
+
+### PLATFORM PROFILE:
+{settings.profile}
+""".strip()
+
+    def _build_enhanced_system_prompt(self, user_key: str, memory_context: Dict, user_input: str) -> str:
+        """
+        دالة داخلية مسؤولة فقط عن هندسة الأوامر (Prompt Engineering).
+        تقوم بدمج التفضيلات + الذاكرة + القواعد في نص واحد.
+        """
+        # 1. جلب التفضيلات من قاعدة البيانات (ذاكرة طويلة المدى)
+        user_profile = self.profile_db.get_profile(user_key)
+        preferences = user_profile.get("preferences", {})
+        
+        system_prompt = self.base_system_prompt
+
+        # 2. حقن التفضيلات (إن وجدت)
+        if preferences:
+            pref_list = [f"- {k}: {v}" for k, v in preferences.items()]
+            pref_text = "\n".join(pref_list)
+            system_prompt += f"\n\n### 👤 KNOWN USER PREFERENCES (Consider these implicitly):\n{pref_text}"
+
+        # 3. حقن ملخص المحادثة السابقة
+        if memory_context.get("summary"):
+            system_prompt += f"\n\n### 📝 CONVERSATION SUMMARY:\n{memory_context['summary']}"
+
+        # 4. حقن الذكريات ذات الصلة (RAG Context)
+        if memory_context.get("relevant_memories"):
+            # تحويل الذكريات إلى نص JSON مضغوط
+            memories_text = "\n".join([json.dumps(m, ensure_ascii=False) for m in memory_context['relevant_memories']])
+            system_prompt += f"\n\n### 🧠 RELEVANT MEMORY & HISTORY:\n{memories_text}"
+            
+        # 5. إضافة تذكير بمعرف المستخدم الحالي (لضمان عمل الأدوات بشكل صحيح)
+        system_prompt += f"\n\n### CURRENT CONTEXT:\nUser ID: {user_key}"
+
+        return system_prompt
+
+    async def process_request(self, user_input: str, session_id: str, access_token: Optional[str] = None) -> AsyncGenerator[Dict, None]:
+        """
+        المعالج الرئيسي للطلب.
+        يقوم بتنفيذ الخطوات بالتسلسل: إعداد السياق -> بناء الذاكرة -> تشغيل النموذج.
+        """
+        if not session_id or session_id == "guest":
+        # حالة طارئة: لا توكن ولا رقم جلسة
+            # نولد معرف عشوائي لحظي (لن يُحفظ بعد انتهاء الطلب)
+            import uuid
+            session_id = str(uuid.uuid4())
+        # 1. تحديد مفتاح المستخدم (User Key) بشكل موحد
+        user_key = session_id if session_id else f"access_token:{access_token}"
+        
+        # حفظ السياق الحالي لاستخدامه في أي مكان في الكود (Global Context)
         current_execution_context.set({
             "session_id": session_id,
             "access_token": access_token,
             "user_id": user_key
         })
 
-        # === بناء السياق الذكي (الحل لمشكلة الحجم 413) ===
-        # يجلب فقط: الملخص + آخر الرسائل + الذكريات المهمة
+        logger.info(f"🚀 بدء معالجة طلب للمستخدم: {user_key}")
+
+        # 2. استرجاع السياق الذكي (RAG Memory Lookup)
+        # هذه الخطوة تبحث في الأرشيف عن أي شيء متعلق بسؤال المستخدم الحالي
         memory_context = memory_engine.build_context(user_key, user_input)
 
-        enriched_system_prompt = self.base_system_prompt
-        
-        if memory_context.get("summary"):
-            enriched_system_prompt += f"\n\n### CONVERSATION SUMMARY:\n{memory_context['summary']}"
-        
-        if memory_context.get("relevant_memories"):
-            # تحويل الذكريات لنص JSON مختصر
-            memories_text = "\n".join([json.dumps(m, ensure_ascii=False) for m in memory_context['relevant_memories']])
-            enriched_system_prompt += f"\n\n### RELEVANT MEMORY:\n{memories_text}"
+        # 3. بناء "الموجه المحسن" (The Enhanced Prompt)
+        final_system_prompt = self._build_enhanced_system_prompt(user_key, memory_context, user_input)
 
-        messages: List[BaseMessage] = [SystemMessage(content=enriched_system_prompt)]
-
-        # إضافة الرسائل الأخيرة فقط
+        # 4. تجهيز قائمة الرسائل للنموذج
+        messages: List[BaseMessage] = [SystemMessage(content=final_system_prompt)]
+        
+        # إضافة آخر بضع رسائل للحفاظ على سياق الحديث القريب
         for text in memory_context.get("recent_messages", []):
             messages.append(HumanMessage(content=f"[History]: {text}"))
-
+        
+        # إضافة رسالة المستخدم الحالية
         messages.append(HumanMessage(content=user_input))
 
-        # حفظ سؤال المستخدم
+        # 5. تسجيل سؤال المستخدم في الذاكرة (للمستقبل)
         memory_engine.ingest_text(user_key, f"User: {user_input}")
 
         inputs = {"messages": messages}
 
-        # تشغيل النماذج مع معالجة الأخطاء
-        for model_name in self.registry.get_available_models():
+        # 6. حلقة التشغيل مع "آلية التعافي من الفشل" (Fallback Mechanism)
+        # نحاول تشغيل النموذج الأول، إذا فشل ننتقل للثاني تلقائياً
+        available_models = self.registry.get_available_models()
+        
+        for model_name in available_models:
             try:
-                llm = ChatGroq(model_name=model_name, api_key=settings.GROQ_API_KEY, temperature=0)
+                # إعداد النموذج
+                llm = ChatGroq(
+                    model_name=model_name, 
+                    api_key=settings.GROQ_API_KEY, 
+                    temperature=0.0  # صفر لضمان الدقة وعدم الهلوسة
+                )
+                
+                # إنشاء الوكيل (ReAct Agent)
                 agent = create_react_agent(llm, self.tools)
                 
                 final_response = ""
 
+                # بدء البث (Streaming)
                 async for event in agent.astream(inputs, config={"recursion_limit": 15}, stream_mode="values"):
+                    
+                    # التحقق من وجود رسائل
                     if not event.get("messages"): continue
                     last_message = event["messages"][-1]
 
+                    # الحالة أ: النموذج يريد استخدام أداة
                     if hasattr(last_message, "tool_calls") and last_message.tool_calls:
                         for call in last_message.tool_calls:
-                            yield {"type": "status", "payload": f"Using tool: {call.get('name')}"}
+                            tool_name = call.get('name')
+                            logger.info(f"🛠️ النموذج يستخدم الأداة: {tool_name}")
+                            yield {"type": "status", "payload": f"جاري استخدام الأداة: {tool_name}..."}
 
+                    # الحالة ب: النموذج أعطى رداً نهائياً
                     elif isinstance(last_message, AIMessage):
                         if last_message.content:
                             final_response = last_message.content
                             yield {"type": "final", "payload": final_response}
                 
-                # حفظ الرد النهائي
+                # إذا وصلنا هنا، يعني أن العملية تمت بنجاح
+                # حفظ رد الذكاء الاصطناعي في الذاكرة
                 if final_response:
                     memory_engine.ingest_text(user_key, f"AI: {final_response}")
                 
-                return
+                return  # خروج من الدالة (لا داعي لتجربة نماذج أخرى)
 
             except Exception as e:
-                logger.error(f"Model {model_name} failed: {e}")
+                # في حال حدوث خطأ، نسجله ونحاول مع النموذج التالي
+                logger.error(f"❌ فشل النموذج {model_name}: {e}")
                 self.registry.report_failure(model_name, str(e))
-                yield {"type": "status", "payload": f"Error with {model_name}, switching..."}
+                yield {"type": "status", "payload": f"واجهنا مشكلة مع {model_name}، جاري التبديل للمحرك الاحتياطي..."}
+
+        # إذا فشلت كل النماذج (نادر الحدوث)
+        yield {"type": "error", "payload": "عذراً، جميع أنظمة الذكاء الاصطناعي مشغولة حالياً. يرجى المحاولة لاحقاً."}

@@ -1,3 +1,4 @@
+#  app/core/config.py
 # Configuration logic
 
 
@@ -15,7 +16,10 @@ class Settings:
     VERSION: str = "1.0.0"
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY")
     TOOLS_API_BASE_URL: str = os.getenv("TOOLS_API_BASE_URL")
-    
+
+    # الخاص بتيليجرام
+    TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN") # سيقرأها من ملف .env تلقائياً
+
     # مسارات ملفات البيانات
     API_DOCS_PATH: Path = BASE_DIR / "data" / "api_docs.json"
     PROFILE_PATH: Path = BASE_DIR / "data" / "agent_profile.json"
