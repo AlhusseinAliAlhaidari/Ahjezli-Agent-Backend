@@ -1,3 +1,13 @@
+---
+title: Ehjezli Agent
+emoji: 🚌
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+app_port: 7860
+---
+
 # ✈️ Ehjezli AI Agent
 
 A high-performance, resilient AI orchestration engine designed for the **Ehjezli Platform**. 
