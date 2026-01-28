@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # نرجع لسحب التاريخ لتجنب أخطاء Git المحلية
+          fetch-depth: 0
           lfs: true
       
       - name: Push to hub
@@ -19,18 +19,20 @@ jobs:
           HF_USERNAME: "alhussainAlhaidari"
           SPACE_NAME: "ehjezli-agent"
         run: |
-          # 1. إعداد هوية وهمية للعملية
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           
-          # 2. إنشاء فرع جديد نظيف تماماً (يقطع صلة التاريخ القديم)
-          # هذا الفرع سيحمل الملفات الحالية فقط بدون ملف ngrok القديم
+          # 1. إنشاء فرع جديد نظيف
           git checkout --orphan fresh_start
           
-          # 3. تثبيت الملفات الحالية
-          git add .
-          git commit -m "Force Sync: Clean state from GitHub"
+          # 2. === الخطوة الجديدة: الحذف القسري للملف ===
+          # نحذفه من النظام ومن سجلات جيت
+          rm -f ngrok.exe
+          git rm --cached ngrok.exe || true
           
-          # 4. الدفع بالقوة إلى الفرع الرئيسي في Hugging Face
-          # (نأخذ الفرع النظيف fresh_start ونضعه مكان main هناك)
+          # 3. تثبيت باقي الملفات
+          git add .
+          git commit -m "Force Sync: Clean state (No ngrok)"
+          
+          # 4. الدفع
           git push --force https://oauth2:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME fresh_start:main
