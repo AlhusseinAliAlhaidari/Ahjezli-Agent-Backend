@@ -3,6 +3,7 @@ venv/
 env/
 .env
 .history/
+ngrok.exe
 
 # 2. تجاهل ملفات بايثون المؤقتة (ملفات غير ضرورية)
 __pycache__/
