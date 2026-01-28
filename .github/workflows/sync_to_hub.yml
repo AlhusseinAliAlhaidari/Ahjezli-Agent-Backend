@@ -19,4 +19,5 @@ jobs:
           HF_USERNAME: "alhussainAlhaidari"
           SPACE_NAME: "ehjezli-agent"
         run: |
-          git push https://oauth2:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME main
+          # لاحظ إضافة --force هنا
+          git push --force https://oauth2:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME main
