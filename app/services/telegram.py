@@ -5,12 +5,19 @@ from app.core.config import settings
 
 logger = logging.getLogger("TelegramService")
 # BASE_URL = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}"
-# دالة strip() ستقوم بحذف أي مسافات أو أسطر جديدة مخفية تلقائياً
-BASE_URL = f"https://api.telegram.org/bot{str(settings.TELEGRAM_BOT_TOKEN).strip()}"
-print(BASE_URL)
+# 👇 ضع التوكن هنا مباشرة بين علامتي تنصيص (تأكدنا من صحته بناءً على رسالتك)
+TOKEN = "8238717411:AAENAkXCb2cXIU99yGZCQpaLyHTdpxrnV5g"
+
+# تأكد أن الرابط نظيف تماماً
+BASE_URL = f"https://api.telegram.org/bot{TOKEN}"
+
 async def send_typing_action(chat_id: int):
     """إرسال مؤشر الكتابة"""
+    
     try:
+        # 👇 هذا السطر سيطبع الرابط النهائي في اللوج لنراه بأعيننا
+        full_url = f"{BASE_URL}/sendMessage"
+        print(f"DEBUG: Trying to connect to: {full_url}")
         async with httpx.AsyncClient() as client:
             await client.post(f"{BASE_URL}/sendChatAction", json={
                 "chat_id": chat_id, "action": "typing"
