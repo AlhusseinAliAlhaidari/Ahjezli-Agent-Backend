@@ -57,6 +57,34 @@
 #     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
 
 
+import socket
+import sys
+
+def check_internet():
+    print("\n🌐 STARTING CONNECTIVITY TEST...")
+    
+    # 1. اختبار DNS العام (هل يرى جوجل؟)
+    try:
+        ip = socket.gethostbyname("google.com")
+        print(f"✅ Google DNS: SUCCESS -> {ip}")
+    except Exception as e:
+        print(f"❌ Google DNS: FAILED -> {e}")
+
+    # 2. اختبار DNS تيليجرام (هل يرى تيليجرام؟)
+    try:
+        # هنا سنعرف هل المشكلة في الرابط أم في السيرفر
+        target = "api.telegram.org"
+        ip = socket.gethostbyname(target)
+        print(f"✅ Telegram DNS: SUCCESS ({target}) -> {ip}")
+    except Exception as e:
+        print(f"❌ Telegram DNS: FAILED -> {e}")
+        
+    print("🌐 END OF TEST\n")
+
+# استدع الدالة فوراً عند تشغيل الملف
+check_internet()
+
+
 #  !================
 
 # FastAPI entry point
