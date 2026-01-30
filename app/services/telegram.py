@@ -65,23 +65,27 @@
 #             # لأن تيليجرام يرفض التعديل إذا كان النص الجديد مطابقاً للقديم
 #             logger.warning(f"⚠️ Edit failed (might be same content): {e}")
 
-
 import requests
 import logging
 import asyncio
 from typing import Optional
 from app.core.config import settings
+import urllib3
+
+# تعطيل تحذيرات الأمان المزعجة لأننا سنستخدم IP مباشر
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 logger = logging.getLogger("TelegramService")
 
-# ✅ 1. قراءة التوكن من البيئة وتنظيفه (Strip) لضمان عدم وجود مسافات خفية
-# هذه الخطوة تحميك من خطأ [Errno -5]
 TOKEN = str(settings.TELEGRAM_BOT_TOKEN).strip()
-BASE_URL = f"https://api.telegram.org/bot{TOKEN}"
+
+# 🛑 الحل الجذري: استخدام رقم IP بدلاً من الاسم
+# هذا يتجاوز مشكلة DNS في سيرفرات Hugging Face
+TELEGRAM_IP = "149.154.167.220"
+BASE_URL = f"https://{TELEGRAM_IP}/bot{TOKEN}"
 
 # ==============================================================================
-# الدوال الداخلية المتزامنة (Synchronous - Blocking)
-# هذه الدوال تستخدم requests وتعمل بشكل مباشر وقوي
+# الدوال المتزامنة (مع تعديل verify=False)
 # ==============================================================================
 
 def _sync_send_message(chat_id: int, text: str) -> Optional[int]:
@@ -89,14 +93,14 @@ def _sync_send_message(chat_id: int, text: str) -> Optional[int]:
     payload = {"chat_id": chat_id, "text": text, "parse_mode": "Markdown"}
     
     try:
-        # timeout ضروري جداً لكي لا يعلق السيرفر إذا كان تيليجرام بطيئاً
-        response = requests.post(url, json=payload, timeout=10)
+        # verify=False: ضروري جداً لأننا نتصل بـ IP مباشر
+        # timeout=10: لعدم تعليق السيرفر
+        logger.info(f"📤 Sending directly to IP: {TELEGRAM_IP}")
+        response = requests.post(url, json=payload, timeout=10, verify=False)
         
-        # إذا فشل التنسيق (Markdown)، نعيد الإرسال كنص عادي
         if response.status_code == 400:
-            logger.warning("⚠️ Markdown failed, resending as plain text...")
             payload.pop("parse_mode")
-            response = requests.post(url, json=payload, timeout=10)
+            response = requests.post(url, json=payload, timeout=10, verify=False)
             
         response.raise_for_status()
         return response.json().get("result", {}).get("message_id")
@@ -114,38 +118,30 @@ def _sync_edit_message(chat_id: int, message_id: int, new_text: str):
         "parse_mode": "Markdown"
     }
     try:
-        response = requests.post(url, json=payload, timeout=10)
-        
-        # محاولة ثانية بدون تنسيق عند الخطأ
+        response = requests.post(url, json=payload, timeout=10, verify=False)
         if response.status_code == 400:
             payload.pop("parse_mode")
-            requests.post(url, json=payload, timeout=10)
-            
+            requests.post(url, json=payload, timeout=10, verify=False)
     except Exception as e:
-        # نتجاهل الخطأ إذا كان المحتوى لم يتغير
         logger.warning(f"⚠️ Edit failed: {e}")
 
 def _sync_send_typing(chat_id: int):
     try:
         requests.post(f"{BASE_URL}/sendChatAction", json={
             "chat_id": chat_id, "action": "typing"
-        }, timeout=5)
+        }, timeout=5, verify=False)
     except Exception:
         pass
 
 # ==============================================================================
-# الدوال الخارجية غير المتزامنة (Asynchronous Wrappers)
-# هذه ما سيستخدمه تطبيقك لكي لا يتوقف السيرفر
+# الدوال غير المتزامنة (كما هي)
 # ==============================================================================
 
 async def send_telegram_message(chat_id: int, text: str) -> Optional[int]:
-    """غلاف غير متزامن لإرسال الرسالة"""
     return await asyncio.to_thread(_sync_send_message, chat_id, text)
 
 async def edit_telegram_message(chat_id: int, message_id: int, new_text: str):
-    """غلاف غير متزامن لتعديل الرسالة"""
     await asyncio.to_thread(_sync_edit_message, chat_id, message_id, new_text)
 
 async def send_typing_action(chat_id: int):
-    """غلاف غير متزامن لمؤشر الكتابة"""
     await asyncio.to_thread(_sync_send_typing, chat_id)
