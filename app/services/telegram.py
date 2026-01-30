@@ -4,7 +4,9 @@ from typing import Optional
 from app.core.config import settings
 
 logger = logging.getLogger("TelegramService")
-BASE_URL = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}"
+# BASE_URL = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}"
+# دالة strip() ستقوم بحذف أي مسافات أو أسطر جديدة مخفية تلقائياً
+BASE_URL = f"https://api.telegram.org/bot{str(settings.TELEGRAM_BOT_TOKEN).strip()}"
 print(BASE_URL)
 async def send_typing_action(chat_id: int):
     """إرسال مؤشر الكتابة"""
