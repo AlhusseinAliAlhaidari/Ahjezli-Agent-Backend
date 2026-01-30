@@ -5,7 +5,7 @@ from app.core.config import settings
 
 logger = logging.getLogger("TelegramService")
 BASE_URL = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}"
-
+print(BASE_URL)
 async def send_typing_action(chat_id: int):
     """إرسال مؤشر الكتابة"""
     try:
