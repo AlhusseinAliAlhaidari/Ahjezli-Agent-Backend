@@ -68,3 +68,7 @@ ehjezli_agent/
 ├── ehjezli_memory.db   # Persistent Storage
 ├── run.py         # 🚀 Automation Script
 └── requirements.txt
+```
+
+## 📝 License
+License Warning: This project is free for personal and educational use only. Commercial use is strictly prohibited. Any use of this code must attribute the original author: [https://github.com/AlhusseinAliAlhaidari].
