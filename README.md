@@ -72,3 +72,5 @@ ehjezli_agent/
 
 ## 📝 License
 License Warning: This project is free for personal and educational use only. Commercial use is strictly prohibited. Any use of this code must attribute the original author: [https://github.com/AlhusseinAliAlhaidari].
+
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
